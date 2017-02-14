@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "470948585777",
+    "firebase_url": "https://botguise.firebaseio.com",
+    "project_id": "botguise",
+    "storage_bucket": "botguise.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:470948585777:android:9a92ee5a1a7fccbb",
+        "android_client_info": {
+          "package_name": "com.codexter.botguise"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "470948585777-8qv7kqhpd4ap744u0kuge08e8q38f72n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARu0MzNhAIA3m-KYMKB7CFOPckbeUfW28"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "470948585777-8qv7kqhpd4ap744u0kuge08e8q38f72n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

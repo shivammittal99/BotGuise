@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.codexter.botguise">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="false"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Introduction"
+            android:label="Introduction"
+            android:screenOrientation="portrait"
+            android:theme="@style/introduction_activity_theme"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ChooseMode"
+            android:screenOrientation="portrait"
+            android:theme="@style/activity_theme" />
+        <activity
+            android:name=".BattleActivity"
+            android:label="Battle"
+            android:screenOrientation="portrait"
+            android:theme="@style/activity_theme" />
+        <activity
+            android:name=".WelcomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme2"
+            android:windowSoftInputMode="stateHidden" />
+    </application>
+
+</manifest>
