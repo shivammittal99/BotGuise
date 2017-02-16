@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 public final class GetJSONResponse {
 
@@ -22,6 +23,7 @@ public final class GetJSONResponse {
             "https://directline.botframework.com/api/conversations/";
     private static String mConversationID;
     private static int mWatermark = -1;
+    private static String mUsername;
 
     private GetJSONResponse() {
     }
@@ -49,19 +51,20 @@ public final class GetJSONResponse {
         String JSONResponse = "";
         URL queryUrl = createUrl(URL + mConversationID + "/messages/");
         String key = Keys.getKey(code);
+        mUsername = from;
 
         try {
-            JSONResponse = makeHttpRequestToPostMessage(queryUrl, from, message, key);
+            makeHttpRequestToPostMessage(queryUrl, from, message, key);
             mWatermark += 1;
         } catch (IOException e) {
             return;
         }
     }
 
-    public static String[] getMessage(int code) {
+    public static ArrayList<Message> getMessage(int code) {
         String JSONResponse = "";
         URL queryUrl = createUrl(URL + mConversationID + "/messages/");
-        String[] messages = null;
+        ArrayList<Message> messages = new ArrayList<>();
         String key = Keys.getKey(code);
 
         try {
@@ -72,14 +75,16 @@ public final class GetJSONResponse {
         try {
             JSONObject jsonObject = new JSONObject(JSONResponse);
             int watermark = jsonObject.getInt("watermark");
-            messages = new String[watermark - mWatermark];
             JSONArray JSONMessages = jsonObject.getJSONArray("messages");
-            for (int i = mWatermark + 1; i <= watermark; i += 1) {
+            for (int i = 0; i <= watermark; i += 1) {
                 JSONObject currentResponse = JSONMessages.getJSONObject(i);
-                if (currentResponse.has("text")) {
-                    messages[i - mWatermark - 1] = currentResponse.getString("text");
+                if(currentResponse.getString("from").equals(mUsername)){
+                    messages.add(new Message("EEMMPPTTYY", currentResponse.getString("text"), mUsername));
+                }
+                else if (currentResponse.has("text")) {
+                    messages.add(new Message("Bot", currentResponse.getString("text"), "EEMMPPTTYY"));
                 } else if (currentResponse.has("attachments")) {
-                    messages[i - mWatermark - 1] = currentResponse.getJSONArray("attachments").getJSONObject(0).getString("url");
+                    messages.add(new Message("Bot", currentResponse.getJSONArray("attachments").getJSONObject(0).getString("url"),"EEMMPPTTYY"));
                 }
             }
             mWatermark = watermark;

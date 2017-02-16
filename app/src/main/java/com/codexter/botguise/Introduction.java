@@ -22,6 +22,9 @@ import static android.view.View.GONE;
 
 public class Introduction extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Message>> {
 
+    private static final int GET_CONVERSATION_ID_LOADER_ID = 0;
+    private static final int POST_GET_LOADER_ID = 1;
+
     private EditText messageToSend;
     private static String mUsername;
     private ProgressBar loadingProgressSpinner;
@@ -54,16 +57,16 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onClick(View v) {
                 String message = messageToSend.getText().toString();
-                mAdaptor.add(new Message(" ", message, mUsername));
+                mAdaptor.add(new Message("EEMMPPTTYY", message, mUsername));
                 sendMessageToBot();
             }
         });
 
-        getLoaderManager().initLoader(0, null, this);
+        getLoaderManager().initLoader(GET_CONVERSATION_ID_LOADER_ID, null, this);
     }
 
     private void sendMessageToBot() {
-        getLoaderManager().initLoader(1, null, this);
+        getLoaderManager().initLoader(POST_GET_LOADER_ID, null, this);
     }
 
     private void leaveIntroduction() {
@@ -76,7 +79,7 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
     public Loader<ArrayList<Message>> onCreateLoader(int id, Bundle args) {
         loadingProgressSpinner.setVisibility(ProgressBar.VISIBLE);
         Log.v("onCreateLoader", "Started Loading");
-        if (id == 0) {
+        if (id == GET_CONVERSATION_ID_LOADER_ID) {
             return new GetConversationId(getApplicationContext(), Keys.INTRO_BOT_KEY_CODE);
         } else {
             String message = messageToSend.getText().toString();
@@ -88,27 +91,33 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<ArrayList<Message>> loader, ArrayList<Message> messages) {
         loadingProgressSpinner.setVisibility(GONE);
-        Message lastMessage = messages.get(messages.size() - 1);
-
-        Log.v("Checking", lastMessage.getMessage());
-        if (lastMessage.getMessage().equals("http://www.theoldrobots.com/images62/Bender-18.JPG")) {
-            messages.remove(lastMessage);
-            mAdaptor.addAll(messages);
-            LinearLayout addMessageBar = (LinearLayout) findViewById(R.id.addMessageBar);
-            final Button leaveIntroduction = (Button) findViewById(R.id.leaveIntroduction);
-            addMessageBar.setVisibility(GONE);
-            leaveIntroduction.setVisibility(View.VISIBLE);
-            Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
-            leaveIntroduction.setTypeface(typeface);
-            leaveIntroduction.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    leaveIntroduction();
-                }
-            });
-        } else {
-            mAdaptor.addAll(messages);
-            getLoaderManager().destroyLoader(1);
+        if (loader.getId() == POST_GET_LOADER_ID) {
+            Message lastMessage = messages.get(messages.size() - 1);
+            if (lastMessage.getMessage().equals("http://www.theoldrobots.com/images62/Bender-18.JPG")) {
+                messages.remove(lastMessage);
+                mAdaptor.clear();
+                mAdaptor.add(new Message("Bot", "Hello", "EEMMPPTTYY"));
+                mAdaptor.addAll(messages);
+                LinearLayout addMessageBar = (LinearLayout) findViewById(R.id.addMessageBar);
+                final Button leaveIntroduction = (Button) findViewById(R.id.leaveIntroduction);
+                addMessageBar.setVisibility(GONE);
+                leaveIntroduction.setVisibility(View.VISIBLE);
+                Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
+                leaveIntroduction.setTypeface(typeface);
+                leaveIntroduction.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        leaveIntroduction();
+                    }
+                });
+            } else {
+                mAdaptor.clear();
+                mAdaptor.add(new Message("Bot", "Hello", "EEMMPPTTYY"));
+                mAdaptor.addAll(messages);
+                getLoaderManager().destroyLoader(POST_GET_LOADER_ID);
+            }
+        } else{
+            mAdaptor.add(new Message("Bot", "Hello", "EEMMPPTTYY"));
         }
     }
 
@@ -128,9 +137,7 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
         @Override
         public ArrayList<Message> loadInBackground() {
             GetJSONResponse.getConversationId(Key_CODE);
-            ArrayList<Message> messages = new ArrayList<>();
-            messages.add(new Message("Bot", "Hello", ""));
-            return messages;
+            return null;
         }
 
         @Override
@@ -160,12 +167,7 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            ArrayList<Message> messages = new ArrayList<>();
-            String[] responses = GetJSONResponse.getMessage(KEY_CODE);
-            for (int i = 0; i < responses.length; i++) {
-                messages.add(new Message("Bot", responses[i], ""));
-            }
-            return messages;
+            return GetJSONResponse.getMessage(KEY_CODE);
         }
 
         @Override
