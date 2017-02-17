@@ -116,9 +116,9 @@
             android:id="@+id/battleChatList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#E3F2FD"
             android:divider="@null"
             android:dividerHeight="0dp"
-            android:background="#E3F2FD"
             android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll" />
 
@@ -139,50 +139,54 @@
     <LinearLayout
         android:id="@+id/battleAddMessageBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:elevation="4dp">
 
         <EditText
             android:id="@+id/battleMessageToSend"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:hint="Type a message"
+            android:padding="8dp"
             android:textColorHint="#A0A0A0"
             android:textSize="24sp" />
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp">
+            android:layout_gravity="bottom"
+            android:padding="10dp">
 
             <Button
                 android:id="@+id/battleSendMessage"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerHorizontal="true"
+                android:layout_width="@dimen/send_button"
+                android:layout_height="@dimen/send_button"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/ic_send" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/battleSendMessage"
-                android:layout_centerHorizontal="true"
+                android:layout_gravity="bottom"
                 android:text="Send"
                 android:textAllCaps="true"
                 android:textColor="#009688" />
-        </RelativeLayout>
+        </FrameLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/takeResponseView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="4dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/responseUserButton"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -194,6 +198,7 @@
 
         <Button
             android:id="@+id/responseBotButton"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

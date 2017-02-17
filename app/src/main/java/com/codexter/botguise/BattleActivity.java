@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -35,36 +36,31 @@ import static android.view.View.VISIBLE;
 
 public class BattleActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ChatMessage> {
 
-    private static String GAME_ID = "demo123";
-    private static String mUsername;
-    private static int mMode;
-    private String mMessageType = "question:";
-    private static int mRoundNumber = 1;
     private static final int TYPE_QUESTION = 1;
     private static final int TYPE_ANSWER = 2;
     private static final int TYPE_USER = 3;
     private static final int TYPE_BOT = 4;
-    //TODO change the value of actual
-    private int actual = 2;
-    private boolean USER_RESPONDS = true;
-
-    private int user_score, opponent_score;
-
     private static final int QUESTION_BOT_INIT_LOADER_ID = 1;
     private static final int ANSWER_BOT_INIT_LOADER_ID = 2;
     private static final int GET_ANSWER_MESSAGE_LOADER_ID = 3;
     private static final int GET_QUESTION_MESSAGE_LOADER_ID = 4;
+    private static String GAME_ID = "demo123";
+    private static String mUsername;
+    private static int mMode;
+    private static int mRoundNumber = 1;
     private static String CONVERSATION_ID = "null";
-
     private static String MESSAGE;
-
-    private static ProgressBar battleLoadingProgressSpinner;
-    private static EditText battleMessageToSend;
-
+    private static ChatMessageAdaptor mMessageAdaptor;
+    private ProgressBar battleLoadingProgressSpinner;
+    private EditText battleMessageToSend;
+    private String mMessageType = "question:";
+    //TODO change the value of actual
+    private int actual = 2;
+    private boolean USER_RESPONDS = true;
+    private int user_score, opponent_score;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mGameDatabaseReference;
     private ChildEventListener mChildEventListener;
-    private static ChatMessageAdaptor mMessageAdaptor;
     private ArrayList<ChatMessage> mMessages = new ArrayList<>();
 
     @Override
@@ -253,6 +249,8 @@ public class BattleActivity extends AppCompatActivity implements LoaderManager.L
                     ChatMessage chatMessage = new ChatMessage(messageToSend.getText().toString(), mUsername, mMessageType);
                     mGameDatabaseReference.push().setValue(chatMessage);
                     messageToSend.setText("");
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(messageToSend.getWindowToken(), 0);
                     timer.cancel();
                     respondToAnswer();
                 }
@@ -279,6 +277,8 @@ public class BattleActivity extends AppCompatActivity implements LoaderManager.L
                     ChatMessage chatMessage = new ChatMessage(messageToSend.getText().toString(), mUsername, mMessageType);
                     mGameDatabaseReference.push().setValue(chatMessage);
                     messageToSend.setText("");
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(messageToSend.getWindowToken(), 0);
                     timer.cancel();
                     respondToAnswer();
                 }
@@ -419,27 +419,6 @@ public class BattleActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
-    public class MyCount extends CountDownTimer {
-        public MyCount(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            TextView time_left = (TextView) findViewById(R.id.time_left);
-            time_left.setText(String.valueOf(millisUntilFinished / 1000));
-        }
-
-        @Override
-        public void onFinish() {
-            TextView time_left = (TextView) findViewById(R.id.time_left);
-            time_left.setText("0");
-            Toast.makeText(BattleActivity.this, "Your time is up.", Toast.LENGTH_SHORT).show();
-            USER_RESPONDS = false;
-        }
-
-    }
-
     @Override
     public Loader<ChatMessage> onCreateLoader(int id, Bundle args) {
         battleLoadingProgressSpinner.setVisibility(ProgressBar.VISIBLE);
@@ -471,12 +450,12 @@ public class BattleActivity extends AppCompatActivity implements LoaderManager.L
             battleLoadingProgressSpinner.setVisibility(GONE);
             getLoaderManager().destroyLoader(loader_id);
             round();
-        } else if(loader_id == GET_ANSWER_MESSAGE_LOADER_ID){
+        } else if (loader_id == GET_ANSWER_MESSAGE_LOADER_ID) {
             MESSAGE = message.getMessage();
             ChatMessage chatMessage = new ChatMessage(MESSAGE, mUsername, mMessageType);
             mGameDatabaseReference.push().setValue(chatMessage);
             respondToQuestion();
-        } else{
+        } else {
             MESSAGE = message.getMessage();
             ChatMessage chatMessage = new ChatMessage(MESSAGE, mUsername, mMessageType);
             mGameDatabaseReference.push().setValue(chatMessage);
@@ -511,9 +490,9 @@ public class BattleActivity extends AppCompatActivity implements LoaderManager.L
     }
 
     public static class PostMessage extends AsyncTaskLoader<ChatMessage> {
+        private static int KEY_CODE;
         private String mMessage;
         private String mUsername;
-        private static int KEY_CODE;
         private String mMessageType;
 
         public PostMessage(Context context, String username, String message, int Key_Code, String messageType) {
@@ -539,6 +518,27 @@ public class BattleActivity extends AppCompatActivity implements LoaderManager.L
         @Override
         protected void onStartLoading() {
             forceLoad();
+        }
+
+    }
+
+    public class MyCount extends CountDownTimer {
+        public MyCount(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            TextView time_left = (TextView) findViewById(R.id.time_left);
+            time_left.setText(String.valueOf(millisUntilFinished / 1000));
+        }
+
+        @Override
+        public void onFinish() {
+            TextView time_left = (TextView) findViewById(R.id.time_left);
+            time_left.setText("0");
+            Toast.makeText(BattleActivity.this, "Your time is up.", Toast.LENGTH_SHORT).show();
+            USER_RESPONDS = false;
         }
 
     }

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -24,14 +25,11 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
 
     private static final int GET_CONVERSATION_ID_LOADER_ID = 0;
     private static final int POST_GET_LOADER_ID = 1;
-
-    private EditText messageToSend;
     private static String mUsername;
-    private ProgressBar loadingProgressSpinner;
-
-    private ArrayList<Message> mMessages = new ArrayList<>();
-
     private static MessageAdaptor mAdaptor;
+    private EditText messageToSend;
+    private ProgressBar loadingProgressSpinner;
+    private ArrayList<Message> mMessages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +55,8 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onClick(View v) {
                 String message = messageToSend.getText().toString();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(messageToSend.getWindowToken(), 0);
                 mAdaptor.add(new Message("EEMMPPTTYY", message, mUsername));
                 sendMessageToBot();
             }
@@ -148,9 +148,9 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
 
     public static class GetMessage extends AsyncTaskLoader<ArrayList<Message>> {
 
+        private static int KEY_CODE;
         private String mMessage;
         private String mUsername;
-        private static int KEY_CODE;
 
         public GetMessage(Context context, String username, String message, int Key_Code) {
             super(context);
