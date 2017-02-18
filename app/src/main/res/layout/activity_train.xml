@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_train"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.codexter.botguise.TrainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -10,7 +13,7 @@
         android:layout_weight="1">
 
         <ListView
-            android:id="@+id/chatList"
+            android:id="@+id/trainChatList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#E3F2FD"
@@ -19,6 +22,34 @@
             android:paddingBottom="16dp"
             android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll" />
+
+        <RelativeLayout
+            android:id="@+id/train_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#E3F2FD"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/train_image_moon_bot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_moon_bot" />
+
+            <TextView
+                android:id="@+id/train_empty_view_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/train_image_moon_bot"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif-regular"
+                android:gravity="center"
+                android:text="Don't just sit there.\nTalk to me"
+                android:textColor="#AAAAAA"
+                android:textSize="24sp" />
+        </RelativeLayout>
 
         <ProgressBar
             android:id="@+id/trainLoadingProgressBar"
@@ -35,7 +66,7 @@
         android:background="@android:color/darker_gray" />
 
     <LinearLayout
-        android:id="@+id/addMessageBar"
+        android:id="@+id/trainAddMessageBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="4dp">
@@ -59,7 +90,7 @@
             android:padding="10dp">
 
             <Button
-                android:id="@+id/sendMessage"
+                android:id="@+id/trainSendMessage"
                 android:layout_width="@dimen/send_button"
                 android:layout_height="@dimen/send_button"
                 android:layout_marginBottom="15dp"
@@ -74,16 +105,4 @@
                 android:textColor="#009688" />
         </FrameLayout>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/leaveIntroduction"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#0D47A1"
-        android:elevation="4dp"
-        android:gravity="center"
-        android:text="Start Fighting"
-        android:textColor="@android:color/white"
-        android:textSize="24sp"
-        android:visibility="gone" />
 </LinearLayout>

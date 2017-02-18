@@ -3,12 +3,15 @@ package com.codexter.botguise;
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -39,13 +42,15 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
         Intent intent = getIntent();
         mUsername = intent.getStringExtra("Username");
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         ListView chatList = (ListView) findViewById(R.id.chatList);
 
         mAdaptor = new MessageAdaptor(getApplication(), mMessages);
         chatList.setAdapter(mAdaptor);
 
-        loadingProgressSpinner = (ProgressBar) findViewById(R.id.loadingProgressSpinner);
-        messageToSend = (EditText) findViewById(R.id.messageToSend);
+        loadingProgressSpinner = (ProgressBar) findViewById(R.id.trainLoadingProgressBar);
+        messageToSend = (EditText) findViewById(R.id.trainMessageToSend);
         Button sendMessage = (Button) findViewById(R.id.sendMessage);
 
         Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");
@@ -64,6 +69,44 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
 
         getLoaderManager().initLoader(GET_CONVERSATION_ID_LOADER_ID, null, this);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                showBackDialogBox();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        showBackDialogBox();
+    }
+
+    private void showBackDialogBox() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you really want to leave?");
+        builder.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Intent intent = new Intent(Introduction.this, WelcomeActivity.class);
+                intent.putExtra("fromIntroduction", true);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("Stay", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
+
 
     private void sendMessageToBot() {
         getLoaderManager().initLoader(POST_GET_LOADER_ID, null, this);

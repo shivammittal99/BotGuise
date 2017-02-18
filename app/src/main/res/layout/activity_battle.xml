@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_fight"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_battle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.codexter.botguise.BattleActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,7 +29,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_horizontal"
                 android:padding="4dp"
-                android:text="User"
+                android:text="You"
                 android:textColor="#616161"
                 android:textSize="16sp" />
 
@@ -122,8 +124,35 @@
             android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll" />
 
+        <RelativeLayout
+            android:id="@+id/battle_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#E3F2FD"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/battle_image_moon_bot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_moon_bot" />
+
+            <TextView
+                android:id="@+id/battle_empty_view_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/battle_image_moon_bot"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif-regular"
+                android:text="The opponent has not asked the first question yet"
+                android:textColor="#AAAAAA"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
         <ProgressBar
-            android:id="@+id/battleLoadingProgressSpinner"
+            android:id="@+id/battleLoadingProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"

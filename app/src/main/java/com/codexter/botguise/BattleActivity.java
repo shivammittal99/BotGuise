@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -71,9 +73,10 @@ public class BattleActivity extends AppCompatActivity implements LoaderManager.L
         Intent intent = getIntent();
         mUsername = intent.getStringExtra("username");
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ListView chatList = (ListView) findViewById(R.id.battleChatList);
-        battleLoadingProgressSpinner = (ProgressBar) findViewById(R.id.battleLoadingProgressSpinner);
+        battleLoadingProgressSpinner = (ProgressBar) findViewById(R.id.battleLoadingProgressBar);
         battleMessageToSend = (EditText) findViewById(R.id.battleMessageToSend);
 
         mMessageAdaptor = new ChatMessageAdaptor(getApplication(), mMessages, mUsername);
@@ -89,6 +92,42 @@ public class BattleActivity extends AppCompatActivity implements LoaderManager.L
             getLoaderManager().initLoader(ANSWER_BOT_INIT_LOADER_ID, null, this);
             Log.v("Conc id final", CONVERSATION_ID);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                showBackDialogBox();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        showBackDialogBox();
+    }
+
+    private void showBackDialogBox() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final boolean exit = false;
+        builder.setMessage("Do you want to exit the game?");
+        builder.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                NavUtils.navigateUpFromSameTask(BattleActivity.this);
+            }
+        });
+        builder.setNegativeButton("Stay", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 
     public void initFirebase() {

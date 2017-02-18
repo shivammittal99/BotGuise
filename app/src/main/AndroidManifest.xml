@@ -24,6 +24,7 @@
         <activity
             android:name=".Introduction"
             android:label="Introduction"
+            android:parentActivityName=".WelcomeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/introduction_activity_theme"
             android:windowSoftInputMode="adjustResize" />
@@ -34,6 +35,7 @@
         <activity
             android:name=".BattleActivity"
             android:label="Battle"
+            android:parentActivityName=".ChooseMode"
             android:screenOrientation="portrait"
             android:theme="@style/activity_theme" />
         <activity
@@ -41,6 +43,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme2"
             android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".TrainActivity"
+            android:label="Train"
+            android:parentActivityName=".ChooseMode"
+            android:screenOrientation="portrait"
+            android:theme="@style/activity_theme" />
     </application>
 
 </manifest>

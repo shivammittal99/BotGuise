@@ -31,7 +31,9 @@ public class ChooseMode extends AppCompatActivity {
         train.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showUnderConstructionDialog();
+                Intent train = new Intent(ChooseMode.this, TrainActivity.class);
+                train.putExtra("username", username);
+                startActivity(train);
             }
         });
     }

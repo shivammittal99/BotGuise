@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "470948585777-vguu5mj0o8vtiiro0lg15bl5deaakm6e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codexter.botguise",
+            "certificate_hash": "1417EA836C8CAADD4507332D26932579F1DDF9D3"
+          }
+        },
+        {
           "client_id": "470948585777-8qv7kqhpd4ap744u0kuge08e8q38f72n.apps.googleusercontent.com",
           "client_type": 3
         }
