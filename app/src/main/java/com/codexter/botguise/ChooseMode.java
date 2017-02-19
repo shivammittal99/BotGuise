@@ -17,8 +17,6 @@ public class ChooseMode extends AppCompatActivity {
 
     private String username;
 
-    private FirebaseAuth mFirebaseAuth;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,8 +25,6 @@ public class ChooseMode extends AppCompatActivity {
         username = getIntent().getStringExtra("name");
         Button fight = (Button) findViewById(R.id.fightButton);
         Button train = (Button) findViewById(R.id.trainButton);
-
-        mFirebaseAuth = FirebaseAuth.getInstance();
 
         fight.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,7 +95,7 @@ public class ChooseMode extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.sign_out_menu:
-                mFirebaseAuth.signOut();
+                FirebaseAuth.getInstance().signOut();
                 Toast.makeText(this, "You have been logged out successully.", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ChooseMode.this, LoginActivity.class);
                 startActivity(intent);

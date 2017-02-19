@@ -43,9 +43,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final Button google_button = (Button) findViewById(R.id.google_button);
+        Button google_button = (Button) findViewById(R.id.google_button);
         Button facebook_button = (Button) findViewById(R.id.facebook_button);
         Button email_button = (Button) findViewById(R.id.email_button);
+        Button sign_up_button = (Button) findViewById(R.id.sign_up_button);
 
         google_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +72,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, EmailAuthActivity.class);
+                startActivity(intent);
+            }
+        });
+        sign_up_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(intent);
             }
         });

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -19,6 +20,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -76,9 +80,21 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
             case android.R.id.home:
                 showBackDialogBox();
                 return true;
+            case R.id.sign_out_menu:
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(this, "You have been logged out successully.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Introduction.this, LoginActivity.class);
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.introduction_menu, menu);
+        return true;
     }
 
     @Override
@@ -159,7 +175,7 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
                 mAdaptor.addAll(messages);
                 getLoaderManager().destroyLoader(POST_GET_LOADER_ID);
             }
-        } else{
+        } else {
             mAdaptor.add(new Message("Bot", "Hello", "EEMMPPTTYY"));
         }
     }

@@ -19,31 +19,32 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class EmailAuthActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private boolean isFirstTime = false;
+public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
-    private EditText mEmailField, mPasswordField;
+    private EditText mEmailField, mPasswordField, mNameField;
     private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_email_auth);
+        setContentView(R.layout.activity_sign_up);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mEmailField = (EditText) findViewById(R.id.field_email);
         mPasswordField = (EditText) findViewById(R.id.field_password);
+        mNameField = (EditText) findViewById(R.id.field_name);
 
-        findViewById(R.id.go_back_button).setOnClickListener(this);
-        findViewById(R.id.email_sign_in_button).setOnClickListener(this);
         findViewById(R.id.verify_email_button).setOnClickListener(this);
-        findViewById(R.id.continue_after_verification_button).setOnClickListener(this);
+        findViewById(R.id.create_account_button).setOnClickListener(this);
+        findViewById(R.id.login_button).setOnClickListener(this);
+        findViewById(R.id.continue_button).setOnClickListener(this);
+        findViewById(R.id.verify_email_button).setEnabled(false);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -53,27 +54,14 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     if (!user.isEmailVerified()) {
-                        findViewById(R.id.email_password_buttons).setVisibility(View.GONE);
-                        findViewById(R.id.email_password_fields).setVisibility(View.GONE);
-                        findViewById(R.id.signed_in_buttons).setVisibility(View.VISIBLE);
+                        Toast.makeText(SignUpActivity.this, "Account created successfully! Verify email to continue.", Toast.LENGTH_SHORT).show();
                         findViewById(R.id.verify_email_button).setEnabled(true);
+                        findViewById(R.id.continue_button).setVisibility(View.VISIBLE);
+                        findViewById(R.id.continue_button).setEnabled(false);
+                        findViewById(R.id.create_account_button).setVisibility(View.GONE);
+
                     } else {
-                        String name = user.getDisplayName();
-                        String email = user.getEmail();
-                        String uid = user.getUid();
-                        Uri photoUrl = user.getPhotoUrl();
-                        Intent intent;
-                        if (isFirstTime) {
-                            intent = new Intent(EmailAuthActivity.this, Introduction.class);
-                        } else {
-                            intent = new Intent(EmailAuthActivity.this, ChooseMode.class);
-                        }
-                        Toast.makeText(EmailAuthActivity.this, "You are signed in as " + email, Toast.LENGTH_SHORT).show();
-                        intent.putExtra("name", email);
-                        intent.putExtra("email", email);
-                        intent.putExtra("uid", uid);
-                        intent.putExtra("photoUrl", photoUrl);
-                        startActivity(intent);
+                        findViewById(R.id.continue_button).setEnabled(true);
                     }
                 }
             }
@@ -82,24 +70,20 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onBackPressed() {
-        if (findViewById(R.id.email_password_fields).getVisibility() == View.VISIBLE) {
-            mAuth.signOut();
-            finish();
-            super.onBackPressed();
-        } else {
-            findViewById(R.id.email_password_buttons).setVisibility(View.VISIBLE);
-            findViewById(R.id.email_password_fields).setVisibility(View.VISIBLE);
-            findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
-            findViewById(R.id.verify_email_button).setEnabled(false);
+        if (findViewById(R.id.continue_button).getVisibility() == View.VISIBLE) {
             mAuth.signOut();
         }
+        finish();
+        super.onBackPressed();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mAuth.signOut();
+                if (findViewById(R.id.continue_button).getVisibility() == View.VISIBLE) {
+                    mAuth.signOut();
+                }
                 finish();
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
@@ -123,48 +107,42 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
         hideProgressDialog();
     }
 
-    private void signIn(String email, String password) {
-        if (!validForm())
+    private void createAccount(final String name, String email, String password) {
+        if (!validForm()) {
             return;
+        }
+
         showProgressDialog();
 
-        mAuth.signInWithEmailAndPassword(email, password)
+        mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()) {
-                            Toast.makeText(EmailAuthActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUpActivity.this, "1.Account creation unsuccessful. Try again...",
+                                    Toast.LENGTH_SHORT).show();
                         } else {
-                            isFirstTime = false;
+                            final FirebaseUser user = mAuth.getCurrentUser();
+
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(name)
+                                    .build();
+
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (!task.isSuccessful()) {
+                                                Toast.makeText(SignUpActivity.this, "2.Account creation unsuccessful. Try again...", Toast.LENGTH_SHORT).show();
+                                                user.delete();
+                                            }
+                                        }
+                                    });
                         }
 
                         hideProgressDialog();
                     }
                 });
-    }
-
-    private void continue_after_verification() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            if (!user.isEmailVerified()) {
-                findViewById(R.id.email_password_buttons).setVisibility(View.GONE);
-                findViewById(R.id.email_password_fields).setVisibility(View.GONE);
-                findViewById(R.id.signed_in_buttons).setVisibility(View.VISIBLE);
-                findViewById(R.id.verify_email_button).setEnabled(true);
-            } else {
-                String name = user.getDisplayName();
-                String email = user.getEmail();
-                String uid = user.getUid();
-                Uri photoUrl = user.getPhotoUrl();
-                Intent intent = new Intent(EmailAuthActivity.this, Introduction.class);
-                Toast.makeText(EmailAuthActivity.this, "You are signed in as " + email, Toast.LENGTH_SHORT).show();
-                intent.putExtra("name", email);
-                intent.putExtra("email", email);
-                intent.putExtra("uid", uid);
-                intent.putExtra("photoUrl", photoUrl);
-                startActivity(intent);
-            }
-        }
     }
 
     private void sendEmailVerification() {
@@ -177,12 +155,12 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
                 findViewById(R.id.verify_email_button).setEnabled(true);
 
                 if (task.isSuccessful()) {
-                    Toast.makeText(EmailAuthActivity.this,
+                    Toast.makeText(SignUpActivity.this,
                             "Verification email sent to " + user.getEmail(),
                             Toast.LENGTH_SHORT).show();
                 } else {
                     Log.e("EmailAuthActivity", "sendEmailVerification", task.getException());
-                    Toast.makeText(EmailAuthActivity.this,
+                    Toast.makeText(SignUpActivity.this,
                             "Failed to send verification email.",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -192,6 +170,14 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
 
     private boolean validForm() {
         boolean valid = true;
+        String name = mNameField.getText().toString();
+        if (TextUtils.isEmpty(name)) {
+            mNameField.setError("Required.");
+            valid = false;
+        } else {
+            mNameField.setError(null);
+        }
+
         String email = mEmailField.getText().toString();
         if (TextUtils.isEmpty(email)) {
             mEmailField.setError("Invalid Email.");
@@ -213,14 +199,26 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.email_sign_in_button) {
-            signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
-        } else if (i == R.id.continue_after_verification_button) {
-            continue_after_verification();
+        if (i == R.id.create_account_button) {
+            createAccount(mNameField.getText().toString(), mEmailField.getText().toString(), mPasswordField.getText().toString());
+        } else if (i == R.id.login_button) {
+            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+            startActivity(intent);
         } else if (i == R.id.verify_email_button) {
             sendEmailVerification();
-        } else if (i == R.id.go_back_button) {
-            Intent intent = new Intent(EmailAuthActivity.this, LoginActivity.class);
+        } else if (i == R.id.continue_button) {
+            FirebaseUser user = mAuth.getCurrentUser();
+            String name = user.getDisplayName();
+            String email = user.getEmail();
+            String uid = user.getUid();
+            Uri photoUrl = user.getPhotoUrl();
+            Intent intent;
+            intent = new Intent(SignUpActivity.this, Introduction.class);
+            Toast.makeText(SignUpActivity.this, "You are signed in as " + email, Toast.LENGTH_SHORT).show();
+            intent.putExtra("name", name);
+            intent.putExtra("email", email);
+            intent.putExtra("uid", uid);
+            intent.putExtra("photoUrl", photoUrl);
             startActivity(intent);
         }
     }

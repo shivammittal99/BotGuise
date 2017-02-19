@@ -59,7 +59,14 @@
             android:label="BotGuise"
             android:screenOrientation="portrait"
             android:theme="@style/activity_theme" />
-        <activity android:name=".EmailAuthActivity" />
+        <activity
+            android:name=".EmailAuthActivity"
+            android:parentActivityName=".LoginActivity"
+            android:theme="@style/activity_theme" />
+        <activity
+            android:name=".SignUpActivity"
+            android:parentActivityName=".LoginActivity"
+            android:theme="@style/activity_theme" />
     </application>
 
 </manifest>
