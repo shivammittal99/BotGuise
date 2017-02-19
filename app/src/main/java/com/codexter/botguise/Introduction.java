@@ -40,7 +40,7 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_introduction);
 
         Intent intent = getIntent();
-        mUsername = intent.getStringExtra("Username");
+        mUsername = intent.getStringExtra("name");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -49,8 +49,8 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
         mAdaptor = new MessageAdaptor(getApplication(), mMessages);
         chatList.setAdapter(mAdaptor);
 
-        loadingProgressSpinner = (ProgressBar) findViewById(R.id.trainLoadingProgressBar);
-        messageToSend = (EditText) findViewById(R.id.trainMessageToSend);
+        loadingProgressSpinner = (ProgressBar) findViewById(R.id.LoadingProgressBar);
+        messageToSend = (EditText) findViewById(R.id.MessageToSend);
         Button sendMessage = (Button) findViewById(R.id.sendMessage);
 
         Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/Raleway-Regular.ttf");

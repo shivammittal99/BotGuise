@@ -21,7 +21,7 @@
             android:transcriptMode="alwaysScroll" />
 
         <ProgressBar
-            android:id="@+id/trainLoadingProgressBar"
+            android:id="@+id/LoadingProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -41,7 +41,7 @@
         android:elevation="4dp">
 
         <EditText
-            android:id="@+id/trainMessageToSend"
+            android:id="@+id/MessageToSend"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

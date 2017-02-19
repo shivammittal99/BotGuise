@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -123,7 +122,7 @@ public class WelcomeActivity extends AppCompatActivity {
         });
 
         if (getIntent().getBooleanExtra("fromIntroduction", false)) {
-            viewPager.setCurrentItem(layouts.length - 1);
+            viewPager.setCurrentItem(0);
         }
     }
 
@@ -151,12 +150,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void launchIntroduction() {
         //prefManager.setFirstTimeLaunch(false);
-        final EditText name = (EditText) findViewById(R.id.name);
-        String username = name.getText().toString();
-        Intent intent = new Intent(this, Introduction.class);
-        intent.putExtra("Username", username);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
-        finish();
     }
 
     /**

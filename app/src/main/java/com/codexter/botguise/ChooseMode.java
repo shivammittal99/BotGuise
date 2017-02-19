@@ -5,21 +5,30 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ChooseMode extends AppCompatActivity {
 
     private String username;
+
+    private FirebaseAuth mFirebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_mode);
 
-        username = getIntent().getStringExtra("username");
+        username = getIntent().getStringExtra("name");
         Button fight = (Button) findViewById(R.id.fightButton);
         Button train = (Button) findViewById(R.id.trainButton);
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
         fight.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,5 +87,25 @@ public class ChooseMode extends AppCompatActivity {
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.choose_mode_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.sign_out_menu:
+                mFirebaseAuth.signOut();
+                Toast.makeText(this, "You have been logged out successully.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ChooseMode.this, LoginActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

@@ -37,6 +37,7 @@
             android:background="@drawable/button_style"
             android:layout_margin="20dp"
             android:text="Battle"
+            style="@style/ThemeOverlay.MyDarkButton"
             android:textSize="24sp" />
 
         <Button
