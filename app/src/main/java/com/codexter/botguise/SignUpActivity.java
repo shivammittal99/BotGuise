@@ -34,8 +34,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
         mEmailField = (EditText) findViewById(R.id.field_email);
         mPasswordField = (EditText) findViewById(R.id.field_password);
         mNameField = (EditText) findViewById(R.id.field_name);
@@ -128,16 +131,22 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                                     .setDisplayName(name)
                                     .build();
 
-                            user.updateProfile(profileUpdates)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (!task.isSuccessful()) {
-                                                Toast.makeText(SignUpActivity.this, "2.Account creation unsuccessful. Try again...", Toast.LENGTH_SHORT).show();
-                                                user.delete();
+                            try {
+                                user.updateProfile(profileUpdates)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (!task.isSuccessful()) {
+                                                    Toast.makeText(SignUpActivity.this, "2.Account creation unsuccessful. Try again...", Toast.LENGTH_SHORT).show();
+                                                    user.delete();
+                                                } else {
+                                                    sendEmailVerification();
+                                                }
                                             }
-                                        }
-                                    });
+                                        });
+                            } catch (NullPointerException e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         hideProgressDialog();
@@ -149,23 +158,27 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.verify_email_button).setEnabled(false);
 
         final FirebaseUser user = mAuth.getCurrentUser();
-        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                findViewById(R.id.verify_email_button).setEnabled(true);
+        try {
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    findViewById(R.id.verify_email_button).setEnabled(true);
 
-                if (task.isSuccessful()) {
-                    Toast.makeText(SignUpActivity.this,
-                            "Verification email sent to " + user.getEmail(),
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e("EmailAuthActivity", "sendEmailVerification", task.getException());
-                    Toast.makeText(SignUpActivity.this,
-                            "Failed to send verification email.",
-                            Toast.LENGTH_SHORT).show();
+                    if (task.isSuccessful()) {
+                        Toast.makeText(SignUpActivity.this,
+                                "Verification email sent to " + user.getEmail(),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("EmailAuthActivity", "sendEmailVerification", task.getException());
+                        Toast.makeText(SignUpActivity.this,
+                                "Failed to send verification email.",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean validForm() {
@@ -202,14 +215,18 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         if (i == R.id.create_account_button) {
             createAccount(mNameField.getText().toString(), mEmailField.getText().toString(), mPasswordField.getText().toString());
         } else if (i == R.id.login_button) {
-            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-            startActivity(intent);
+            finish();
         } else if (i == R.id.verify_email_button) {
             sendEmailVerification();
         } else if (i == R.id.continue_button) {
             FirebaseUser user = mAuth.getCurrentUser();
-            String name = user.getDisplayName();
-            String email = user.getEmail();
+            String name = null, email = null;
+            try {
+                name = user.getDisplayName();
+                email = user.getEmail();
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
             String uid = user.getUid();
             Uri photoUrl = user.getPhotoUrl();
             Intent intent;

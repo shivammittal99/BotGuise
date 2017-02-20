@@ -30,7 +30,7 @@
         completions."
     </string>
 
-    <string name="default_google_web_client_id">470948585777-8qv7kqhpd4ap744u0kuge08e8q38f72n.apps.googleusercontent.com</string>
+    <string name="default_google_web_client_id">470948585777&#8211;8qv7kqhpd4ap744u0kuge08e8q38f72n.apps.googleusercontent.com</string>
 
     <string name="label_google_sign_in">Firebase + Google Sign In</string>
     <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
@@ -59,8 +59,11 @@
     <string name="create_account">Create Account</string>
     <string name="sign_out">Sign Out</string>
     <string name="Continue">Continue</string>
-    <string name="go_back">Go Back</string>
+    <string name="go_to_sign_up">Don\'t have an account? Sign up</string>
+    <string name="go_to_login">Already a member? Login</string>
+    <string name="forgot_password">Forgot your Password?</string>
     <string name="verify_email">Verify Email</string>
+    <string name="reset_password">Reset password</string>
     <string name="disconnect">Disconnect</string>
     <string name="loading">Loading…</string>
     <string name="custom_token">Custom Token</string>
@@ -71,7 +74,7 @@
     <string name="hint_password">Password</string>
     <string name="desc_firebase_lockup">Firebase logo and name</string>
     <string name="auth_failed">Authentication failed</string>
-
+    <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
     <string name="firebase_status_fmt">Firebase User: %s</string>
     <string name="firebase_user_management">Firebase User Management</string>
 
@@ -93,6 +96,5 @@
     <string name="id_fmt">User ID: %s</string>
     <string name="email_fmt">Email: %s</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="btn_back"><![CDATA[<< Back]]></string>
 </resources>

@@ -63,10 +63,10 @@ public class WelcomeActivity extends AppCompatActivity {
 
         // Checking for first time launch - before calling setContentView()
         prefManager = new PrefManager(this);
-//        if (!prefManager.isFirstTimeLaunch()) {
-//            launchHomeScreen();
-//            finish();
-//        }
+        if (!prefManager.isFirstTimeLaunch()) {
+            launchLoginPage();
+            finish();
+        }
 
         // Making notification bar transparent
         if (Build.VERSION.SDK_INT >= 21) {
@@ -116,7 +116,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     // move to next screen
                     viewPager.setCurrentItem(current);
                 } else {
-                    launchIntroduction();
+                    launchLoginPage();
                 }
             }
         });
@@ -148,8 +148,8 @@ public class WelcomeActivity extends AppCompatActivity {
         return viewPager.getCurrentItem() + i;
     }
 
-    private void launchIntroduction() {
-        //prefManager.setFirstTimeLaunch(false);
+    private void launchLoginPage() {
+        prefManager.setFirstTimeLaunch(false);
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
@@ -171,7 +171,7 @@ public class WelcomeActivity extends AppCompatActivity {
     public class MyViewPagerAdapter extends PagerAdapter {
         private LayoutInflater layoutInflater;
 
-        public MyViewPagerAdapter() {
+        private MyViewPagerAdapter() {
         }
 
         @Override

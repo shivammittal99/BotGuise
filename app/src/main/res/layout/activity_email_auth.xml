@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_email_auth"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,7 +27,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="4"
         android:gravity="center_vertical">
 
         <LinearLayout
@@ -37,21 +38,34 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp">
 
-            <EditText
-                android:id="@+id/field_email"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:hint="@string/hint_email"
-                android:inputType="textEmailAddress" />
+                app:hintAnimationEnabled="true">
 
-            <EditText
-                android:id="@+id/field_password"
+                <EditText
+                    android:id="@+id/field_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:hint="@string/hint_email"
+                    android:inputType="textEmailAddress" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:hint="@string/hint_password"
-                android:inputType="textPassword" />
+                app:hintAnimationEnabled="true"
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/field_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:hint="@string/hint_password"
+                    android:inputType="textPassword" />
+            </android.support.design.widget.TextInputLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -64,20 +78,47 @@
             android:paddingRight="16dp">
 
             <Button
-                android:id="@+id/go_back_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/go_back"
-                android:theme="@style/ThemeOverlay.MyDarkButton" />
-
-            <Button
                 android:id="@+id/email_sign_in_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/sign_in"
                 android:theme="@style/ThemeOverlay.MyDarkButton" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/email_password_buttons"
+            android:layout_margin="24sp"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <Button
+                android:id="@+id/forgot_password_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/tw__transparent"
+                android:padding="8dp"
+                android:text="@string/forgot_password"
+                android:textAllCaps="false"
+                android:textColor="#03A9F4"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/go_to_login_button"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/tw__transparent"
+                android:padding="8dp"
+                android:text="@string/go_to_sign_up"
+                android:textAllCaps="false"
+                android:textColor="@color/btn_login_register"
+                android:textSize="16sp" />
 
         </LinearLayout>
 

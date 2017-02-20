@@ -6,12 +6,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,16 +38,20 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_email_auth);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
         mEmailField = (EditText) findViewById(R.id.field_email);
         mPasswordField = (EditText) findViewById(R.id.field_password);
 
-        findViewById(R.id.go_back_button).setOnClickListener(this);
+        findViewById(R.id.go_to_login_button).setOnClickListener(this);
         findViewById(R.id.email_sign_in_button).setOnClickListener(this);
         findViewById(R.id.verify_email_button).setOnClickListener(this);
         findViewById(R.id.continue_after_verification_button).setOnClickListener(this);
+        findViewById(R.id.forgot_password_button).setOnClickListener(this);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -171,7 +179,8 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
         findViewById(R.id.verify_email_button).setEnabled(false);
 
         final FirebaseUser user = mAuth.getCurrentUser();
-        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+        try {
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 findViewById(R.id.verify_email_button).setEnabled(true);
@@ -187,7 +196,10 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
                             Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+            });
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean validForm() {
@@ -210,6 +222,56 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
         return valid;
     }
 
+    private void resetPassword() {
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.forgot_password_dialog, null);
+        dialogBuilder.setView(dialogView);
+
+        final EditText editEmail = (EditText) dialogView.findViewById(R.id.email);
+        final Button btnReset = (Button) dialogView.findViewById(R.id.btn_reset_password);
+        final ProgressBar progressBar1 = (ProgressBar) dialogView.findViewById(R.id.progressBar);
+        final Button btn_back = (Button) dialogView.findViewById(R.id.btn_back);
+
+        final AlertDialog dialog = dialogBuilder.create();
+
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String email = editEmail.getText().toString().trim();
+
+                if (TextUtils.isEmpty(email)) {
+                    Toast.makeText(getApplication(), "Enter your registered email id", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                progressBar1.setVisibility(View.VISIBLE);
+                mAuth.sendPasswordResetEmail(email)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(EmailAuthActivity.this, "We have sent you instructions to reset your password!", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(EmailAuthActivity.this, "Failed to send reset email!", Toast.LENGTH_SHORT).show();
+                                }
+
+                                progressBar1.setVisibility(View.GONE);
+                                dialog.dismiss();
+                            }
+                        });
+
+            }
+        });
+        dialog.show();
+    }
+
     @Override
     public void onClick(View v) {
         int i = v.getId();
@@ -219,9 +281,10 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
             continue_after_verification();
         } else if (i == R.id.verify_email_button) {
             sendEmailVerification();
-        } else if (i == R.id.go_back_button) {
-            Intent intent = new Intent(EmailAuthActivity.this, LoginActivity.class);
-            startActivity(intent);
+        } else if (i == R.id.go_to_login_button) {
+            finish();
+        } else if (i == R.id.forgot_password_button) {
+            resetPassword();
         }
     }
 
