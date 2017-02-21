@@ -21,6 +21,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="activity_theme_2" parent="Theme.AppCompat.Light">
+        <item name="android:colorPrimary">#FF5722</item>
+        <item name="android:colorPrimaryDark">#B2340C</item>
+        <item name="android:colorAccent">#22FFC7</item>
+        <item name="android:colorButtonNormal">#00B286</item>
+        <item name="android:colorBackground">#FF6A3B</item>
+    </style>
+
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <!--<item name="android:windowBackground">@drawable/background_splash</item>-->
         <item name="android:background">@drawable/background_splash</item>

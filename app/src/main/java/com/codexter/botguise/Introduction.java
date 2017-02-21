@@ -109,8 +109,9 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                Intent intent = new Intent(Introduction.this, WelcomeActivity.class);
-                intent.putExtra("fromIntroduction", true);
+                Intent intent = new Intent(Introduction.this, ChooseMode.class);
+                intent.putExtra("completedIntroduction", false);
+                finish();
                 startActivity(intent);
             }
         });
@@ -130,7 +131,7 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
 
     private void leaveIntroduction() {
         Intent leaveIntroduction = new Intent(Introduction.this, ChooseMode.class);
-        leaveIntroduction.putExtra("username", mUsername);
+        leaveIntroduction.putExtra("completedIntroduction", true);
         startActivity(leaveIntroduction);
     }
 

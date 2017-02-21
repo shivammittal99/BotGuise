@@ -120,10 +120,6 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
             }
         });
-
-        if (getIntent().getBooleanExtra("fromIntroduction", false)) {
-            viewPager.setCurrentItem(0);
-        }
     }
 
     private void addBottomDots(int currentPage) {

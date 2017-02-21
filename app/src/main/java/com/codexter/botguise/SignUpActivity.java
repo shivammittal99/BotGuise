@@ -229,8 +229,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
             }
             String uid = user.getUid();
             Uri photoUrl = user.getPhotoUrl();
-            Intent intent;
-            intent = new Intent(SignUpActivity.this, Introduction.class);
+            Intent intent = new Intent(SignUpActivity.this, ChooseMode.class);
             Toast.makeText(SignUpActivity.this, "You are signed in as " + email, Toast.LENGTH_SHORT).show();
             intent.putExtra("name", name);
             intent.putExtra("email", email);

@@ -132,7 +132,7 @@ public class BattleActivity extends AppCompatActivity implements LoaderManager.L
 
     public void initFirebase() {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mGameDatabaseReference = mFirebaseDatabase.getReference().child(GAME_ID);
+        mGameDatabaseReference = mFirebaseDatabase.getReference().child("Battles").child(GAME_ID);
 
         mChildEventListener = new ChildEventListener() {
             @Override

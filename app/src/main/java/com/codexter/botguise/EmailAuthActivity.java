@@ -70,12 +70,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
                         String email = user.getEmail();
                         String uid = user.getUid();
                         Uri photoUrl = user.getPhotoUrl();
-                        Intent intent;
-                        if (isFirstTime) {
-                            intent = new Intent(EmailAuthActivity.this, Introduction.class);
-                        } else {
-                            intent = new Intent(EmailAuthActivity.this, ChooseMode.class);
-                        }
+                        Intent intent = new Intent(EmailAuthActivity.this, ChooseMode.class);
                         Toast.makeText(EmailAuthActivity.this, "You are signed in as " + email, Toast.LENGTH_SHORT).show();
                         intent.putExtra("name", email);
                         intent.putExtra("email", email);
@@ -164,7 +159,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
                 String email = user.getEmail();
                 String uid = user.getUid();
                 Uri photoUrl = user.getPhotoUrl();
-                Intent intent = new Intent(EmailAuthActivity.this, Introduction.class);
+                Intent intent = new Intent(EmailAuthActivity.this, ChooseMode.class);
                 Toast.makeText(EmailAuthActivity.this, "You are signed in as " + email, Toast.LENGTH_SHORT).show();
                 intent.putExtra("name", email);
                 intent.putExtra("email", email);

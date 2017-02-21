@@ -30,7 +30,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
 
     private static final int RC_GOOGLE_SIGN_IN = 9001;
-    private boolean isFirstTime = true;
 
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth mAuth;
@@ -94,12 +93,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     String email = user.getEmail();
                     String uid = user.getUid();
                     Uri photoUrl = user.getPhotoUrl();
-                    Intent intent;
-                    if (isFirstTime) {
-                        intent = new Intent(LoginActivity.this, Introduction.class);
-                    } else {
-                        intent = new Intent(LoginActivity.this, ChooseMode.class);
-                    }
+                    Intent intent = new Intent(LoginActivity.this, ChooseMode.class);
                     Toast.makeText(LoginActivity.this, "You are signed in as " + name, Toast.LENGTH_SHORT).show();
                     intent.putExtra("name", name);
                     intent.putExtra("email", email);

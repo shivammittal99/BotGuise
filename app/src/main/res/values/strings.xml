@@ -97,4 +97,7 @@
     <string name="email_fmt">Email: %s</string>
 
     <string name="btn_back"><![CDATA[<< Back]]></string>
+    <string name="choose_mode">Choose Mode</string>
+    <string name="train">Train</string>
+    <string name="battle">battle</string>
 </resources>
