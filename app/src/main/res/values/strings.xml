@@ -30,7 +30,7 @@
         completions."
     </string>
 
-    <string name="default_google_web_client_id">470948585777&#8211;8qv7kqhpd4ap744u0kuge08e8q38f72n.apps.googleusercontent.com</string>
+    <string name="default_google_web_client_id">470948585777-8qv7kqhpd4ap744u0kuge08e8q38f72n.apps.googleusercontent.com</string>
 
     <string name="label_google_sign_in">Firebase + Google Sign In</string>
     <string name="desc_google_sign_in">Use a Google Sign In credential to authenticate with Firebase.</string>
