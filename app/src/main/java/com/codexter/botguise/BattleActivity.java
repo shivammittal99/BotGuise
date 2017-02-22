@@ -176,7 +176,7 @@ public class BattleActivity extends AppCompatActivity implements LoaderManager.L
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (TextUtils.isEmpty(editText.getText().toString())) {
-                    Toast.makeText(BattleActivity.this, "Enter something to get started.", Toast.LENGTH_SHORT).show();
+                    editText.setError("Enter something to get started");
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 } else {
@@ -200,7 +200,7 @@ public class BattleActivity extends AppCompatActivity implements LoaderManager.L
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (TextUtils.isEmpty(editText.getText().toString())) {
-                    Toast.makeText(BattleActivity.this, "Enter a Game Id to start the game", Toast.LENGTH_SHORT).show();
+                    editText.setError("Enter a Game Id to start the game");
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 } else {

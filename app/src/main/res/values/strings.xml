@@ -100,4 +100,6 @@
     <string name="choose_mode">Choose Mode</string>
     <string name="train">Train</string>
     <string name="battle">battle</string>
+
+    <string name="pack01">pack01</string>
 </resources>
