@@ -27,6 +27,7 @@
         android:visibility="invisible" />
 
     <LinearLayout
+        android:id="@+id/opponentView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -34,20 +35,8 @@
         android:layout_marginTop="16dp"
         android:layout_toEndOf="@id/person_icon"
         android:layout_toStartOf="@id/battleUserInitialsTextView"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/opponentMessageType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:background="@drawable/message_box_opponent"
-            android:minWidth="48dp"
-            android:padding="12dp"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:visibility="gone"
-            tools:text="Question" />
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/opponentMessageTextView"
@@ -58,11 +47,36 @@
             android:padding="12dp"
             android:textColor="@android:color/black"
             android:textSize="20sp"
-            android:visibility="gone"
             tools:text="Message" />
+
+        <RadioGroup
+            android:id="@+id/guess_radio_btns"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/guess_user_radio_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:buttonTint="@android:color/holo_blue_dark" />
+
+            <RadioButton
+                android:id="@+id/guess_bot_radio_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="34dp"
+                android:layout_weight="1"
+                android:buttonTint="@android:color/holo_orange_dark" />
+        </RadioGroup>
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/userView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -70,36 +84,47 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_toEndOf="@id/person_icon">
-
-        <TextView
-            android:id="@+id/userMessageType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="4dp"
-            android:background="@drawable/message_box_user"
-            android:minWidth="48dp"
-            android:padding="12dp"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:visibility="gone"
-            tools:text="Answer" />
+        android:layout_toEndOf="@id/person_icon"
+        android:gravity="end"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/userMessageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/userMessageType"
             android:background="@drawable/message_box_user"
             android:gravity="center"
             android:minWidth="48dp"
             android:padding="12dp"
             android:textColor="@android:color/white"
             android:textSize="20sp"
-            android:visibility="gone"
             tools:text="Message" />
-    </RelativeLayout>
+
+        <RadioGroup
+            android:id="@+id/satisfication_radio_btns"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/satisfied_radio_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="34dp"
+                android:layout_weight="1"
+                android:buttonTint="@android:color/holo_green_light" />
+
+            <RadioButton
+                android:id="@+id/not_satisfied_radio_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:buttonTint="@android:color/holo_red_light" />
+        </RadioGroup>
+    </LinearLayout>
 
 </RelativeLayout>

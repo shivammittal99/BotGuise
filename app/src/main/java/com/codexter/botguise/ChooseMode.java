@@ -3,15 +3,19 @@ package com.codexter.botguise;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -35,10 +39,30 @@ public class ChooseMode extends AppCompatActivity {
     private FirebaseUser mFirebaseUser;
     private UserDetails mUserDetails = new UserDetails();
 
+    private String PACK;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_mode);
+
+        PACK = getIntent().getStringExtra("PACK");
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        initCollapsingToolbar(PACK);
+
+        try {
+            if (PACK.equals(getString(R.string.pack01))) {
+                Glide.with(this).load(R.drawable.pack01).into((ImageView) findViewById(R.id.backdrop));
+            } else if (PACK.equals(getString(R.string.pack02))) {
+                Glide.with(this).load(R.drawable.pack02).into((ImageView) findViewById(R.id.backdrop));
+            } else if (PACK.equals(getString(R.string.pack03))) {
+                Glide.with(this).load(R.drawable.pack03).into((ImageView) findViewById(R.id.backdrop));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         mAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mAuth.getCurrentUser();
@@ -65,7 +89,7 @@ public class ChooseMode extends AppCompatActivity {
 
         username = mUserDetails.getUsername();
 
-        Button fight = (Button) findViewById(R.id.fightButton);
+        final Button fight = (Button) findViewById(R.id.fightButton);
         Button train = (Button) findViewById(R.id.trainButton);
 
         fight.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +103,9 @@ public class ChooseMode extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent train = new Intent(ChooseMode.this, TrainActivity.class);
-                train.putExtra("username", username);
+                train.putExtra("userId", mFirebaseUser.getUid());
+                train.putExtra("PACK", PACK);
+                finish();
                 startActivity(train);
             }
         });
@@ -87,37 +113,43 @@ public class ChooseMode extends AppCompatActivity {
         mChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.v("created", dataSnapshot.toString());
                 UserDetails userDetails = dataSnapshot.getValue(UserDetails.class);
-                if (userDetails.getIntroductionStatus()) {
-                    mUserDetails = dataSnapshot.getValue(UserDetails.class);
-                } else if (getIntent().getBooleanExtra("completedIntroduction", false)) {
-                    Map<String, Object> updates = new HashMap<>();
-                    updates.put("introductionStatus", true);
-                    mUserDatabaseReference.updateChildren(updates);
-                } else {
-                    Intent intent = new Intent(ChooseMode.this, Introduction.class);
-                    intent.putExtra("name", mFirebaseUser.getDisplayName());
-                    Toast.makeText(ChooseMode.this, "Please complete Introduction to continue.", Toast.LENGTH_SHORT).show();
-                    startActivity(intent);
+                if (userDetails.getUsername() == mAuth.getCurrentUser().getDisplayName()) {
+                    if (userDetails.getIntroductionStatus()) {
+                        mUserDetails = dataSnapshot.getValue(UserDetails.class);
+                    } else if (getIntent().getBooleanExtra("completedIntroduction", false)) {
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("introductionStatus", true);
+                        mUserDatabaseReference.updateChildren(updates);
+                    } else {
+                        Intent intent = new Intent(ChooseMode.this, Introduction.class);
+                        intent.putExtra("name", mFirebaseUser.getDisplayName());
+                        intent.putExtra("PACK", PACK);
+                        finish();
+                        Toast.makeText(ChooseMode.this, "Please complete Introduction to continue.", Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
+                    }
                 }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.v("updated", dataSnapshot.toString());
                 UserDetails userDetails = dataSnapshot.getValue(UserDetails.class);
-                if (userDetails.getIntroductionStatus()) {
-                    mUserDetails = dataSnapshot.getValue(UserDetails.class);
-                } else if (getIntent().getBooleanExtra("completedIntroduction", false)) {
-                    Map<String, Object> updates = new HashMap<>();
-                    updates.put("introductionStatus", true);
-                    mUserDatabaseReference.updateChildren(updates);
-                } else {
-                    Intent intent = new Intent(ChooseMode.this, Introduction.class);
-                    intent.putExtra("name", mFirebaseUser.getDisplayName());
-                    Toast.makeText(ChooseMode.this, "Please complete Introduction to continue.", Toast.LENGTH_SHORT).show();
-                    startActivity(intent);
+                if (userDetails.getUsername() == mAuth.getCurrentUser().getDisplayName()) {
+                    if (userDetails.getIntroductionStatus()) {
+                        mUserDetails = dataSnapshot.getValue(UserDetails.class);
+                    } else if (getIntent().getBooleanExtra("completedIntroduction", false)) {
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("introductionStatus", true);
+                        mUserDatabaseReference.updateChildren(updates);
+                    } else {
+                        Intent intent = new Intent(ChooseMode.this, Introduction.class);
+                        intent.putExtra("name", mFirebaseUser.getDisplayName());
+                        intent.putExtra("PACK", PACK);
+                        finish();
+                        Toast.makeText(ChooseMode.this, "Please complete Introduction to continue.", Toast.LENGTH_SHORT).show();
+                        startActivity(intent);
+                    }
                 }
             }
 
@@ -135,27 +167,63 @@ public class ChooseMode extends AppCompatActivity {
         };
     }
 
+    /**
+     * Initializing collapsing toolbar
+     * Will show and hide the toolbar title on scroll
+     */
+    private void initCollapsingToolbar(final String title) {
+        final CollapsingToolbarLayout collapsingToolbar =
+                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle(" ");
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        appBarLayout.setExpanded(true);
+
+        // hiding & showing the title when toolbar expanded & collapsed
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbar.setTitle(title);
+                    isShow = true;
+                } else if (isShow) {
+                    collapsingToolbar.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        });
+    }
+
     private void showCreateJoinGameDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setMessage("Create a new game or Join a game");
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Create", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent battle = new Intent(ChooseMode.this, BattleActivity.class);
-                battle.putExtra("username", username);
-                battle.putExtra("mode", 1);
-                startActivity(battle);
+                dialog.dismiss();
+                Intent intent = new Intent(ChooseMode.this, BattleActivity.class);
+                intent.putExtra("MODE", "CREATE");
+                intent.putExtra("PACK", PACK);
+                finish();
+                startActivity(intent);
             }
         });
 
-        builder.setNegativeButton("Join", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Join", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent battle = new Intent(ChooseMode.this, BattleActivity.class);
-                battle.putExtra("username", username);
-                battle.putExtra("mode", 2);
-                startActivity(battle);
+                dialog.dismiss();
+                Intent intent = new Intent(ChooseMode.this, BattleActivity.class);
+                intent.putExtra("MODE", "JOIN");
+                intent.putExtra("PACK", PACK);
+                finish();
+                startActivity(intent);
             }
         });
 
@@ -177,6 +245,7 @@ public class ChooseMode extends AppCompatActivity {
                 Toast.makeText(this, "You have been logged out successully.", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ChooseMode.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

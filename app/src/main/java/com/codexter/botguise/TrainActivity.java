@@ -5,10 +5,10 @@ import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -31,21 +31,23 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
 
     private static final int GET_MESSAGE_LOADER_ID = 1;
     private static final int CHANGE_MESSAGE_LOADER_ID = 2;
-    private static String mUsername;
+    private static String mUserId;
+    private static String PACK;
     private static TrainMessageAdaptor mAdaptor;
     private EditText trainMessageToSend;
     private ProgressBar trainLoadingProgressBar;
     private ArrayList<TrainMessage> mMessages = new ArrayList<>();
     private String mMessage;
-    private String statement1;
-    private String statement2;
+    private String prevblob;
+    private String trainblob;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_train);
 
-        mUsername = getIntent().getStringExtra("username");
+        mUserId = getIntent().getStringExtra("userId");
+        PACK = getIntent().getStringExtra("PACK");
 
         try {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -70,16 +72,18 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
         trainSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mMessage = trainMessageToSend.getText().toString();
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(trainMessageToSend.getWindowToken(), 0);
-                mAdaptor.add(new TrainMessage(false, mMessage));
-                if (getLoaderManager().getLoader(GET_MESSAGE_LOADER_ID) == null) {
-                    getLoaderManager().initLoader(GET_MESSAGE_LOADER_ID, null, TrainActivity.this);
-                } else {
-                    getLoaderManager().restartLoader(GET_MESSAGE_LOADER_ID, null, TrainActivity.this);
+                mMessage = trainMessageToSend.getText().toString().trim();
+                if (!TextUtils.isEmpty(mMessage)) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(trainMessageToSend.getWindowToken(), 0);
+                    mAdaptor.add(new TrainMessage(false, mMessage));
+                    if (getLoaderManager().getLoader(GET_MESSAGE_LOADER_ID) == null) {
+                        getLoaderManager().initLoader(GET_MESSAGE_LOADER_ID, null, TrainActivity.this);
+                    } else {
+                        getLoaderManager().restartLoader(GET_MESSAGE_LOADER_ID, null, TrainActivity.this);
+                    }
+                    trainMessageToSend.setText("");
                 }
-                trainMessageToSend.setText("");
             }
         });
 
@@ -129,8 +133,8 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
                         field_changed_response.setError("Required");
                     } else {
                         TrainMessage previous = mAdaptor.getItem(index - 1);
-                        statement1 = previous.getMessage();
-                        statement2 = changedResponse;
+                        prevblob = previous.getMessage();
+                        trainblob = changedResponse;
                         if (getLoaderManager().getLoader(CHANGE_MESSAGE_LOADER_ID) == null) {
                             getLoaderManager().initLoader(CHANGE_MESSAGE_LOADER_ID, null, TrainActivity.this);
                         } else {
@@ -138,7 +142,8 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
                         }
                         satisfied_radio.setChecked(true);
                         TrainMessage change = mAdaptor.getItem(index);
-                        change.setMessage(statement2);
+                        change.setMessage(trainblob);
+                        mAdaptor.notifyDataSetChanged();
                         dialog.dismiss();
                     }
                 }
@@ -163,7 +168,10 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                NavUtils.navigateUpFromSameTask(TrainActivity.this);
+                Intent intent = new Intent(TrainActivity.this, ChooseMode.class);
+                intent.putExtra("PACK", PACK);
+                finish();
+                startActivity(intent);
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -180,9 +188,9 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
         trainLoadingProgressBar.setVisibility(View.VISIBLE);
         switch (id) {
             case GET_MESSAGE_LOADER_ID:
-                return new GetMessage(getApplicationContext(), mUsername, getString(R.string.pack01), true, mMessage);
+                return new GetMessage(getApplicationContext(), mUserId, PACK, true, mMessage);
             case CHANGE_MESSAGE_LOADER_ID:
-                return new ChangeMessage(getApplicationContext(), mUsername, getString(R.string.pack01), statement1, statement2);
+                return new ChangeMessage(getApplicationContext(), mUserId, PACK, prevblob, trainblob);
             default:
                 return null;
         }
@@ -205,13 +213,13 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
     }
 
     public static class GetMessage extends AsyncTaskLoader<ArrayList<String>> {
-        private String from, category, message;
+        private String user, part, message;
         private boolean train;
 
-        public GetMessage(Context context, String from, String category, boolean train, String message) {
+        public GetMessage(Context context, String user, String part, boolean train, String message) {
             super(context);
-            this.from = from;
-            this.category = category;
+            this.user = user;
+            this.part = part;
             this.train = train;
             this.message = message;
         }
@@ -223,20 +231,20 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
 
         @Override
         public ArrayList<String> loadInBackground() {
-            return GetTrainResponse.getMessage(from, null, category, train, message);
+            return GetTrainResponse.getMessage(user, part, train, message);
         }
     }
 
     public static class ChangeMessage extends AsyncTaskLoader<ArrayList<String>> {
 
-        private String from, statement1, statement2, category;
+        private String user, prevblob, trainblob, part;
 
-        public ChangeMessage(Context context, String from, String category, String statement1, String statement2) {
+        public ChangeMessage(Context context, String user, String part, String prevblob, String trainblob) {
             super(context);
-            this.from = from;
-            this.statement1 = statement1;
-            this.statement2 = statement2;
-            this.category = category;
+            this.user = user;
+            this.prevblob = prevblob;
+            this.trainblob = trainblob;
+            this.part = part;
         }
 
         @Override
@@ -246,7 +254,7 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
 
         @Override
         public ArrayList<String> loadInBackground() {
-            GetTrainResponse.changeMessage(from, null, category, statement1, statement2);
+            GetTrainResponse.changeMessage(user, part, prevblob, trainblob);
             return new ArrayList<>();
         }
 

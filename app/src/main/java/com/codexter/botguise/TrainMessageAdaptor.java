@@ -56,7 +56,6 @@ public class TrainMessageAdaptor extends ArrayAdapter<TrainMessage> {
             final RadioGroup satisfication = (RadioGroup) listView.findViewById(R.id.satisfication_radio_btns);
             satisfication.check(R.id.satisfied_radio_btn);
             final RadioButton satisfied = (RadioButton) listView.findViewById(R.id.satisfied_radio_btn);
-            final RadioButton not_satisfied = (RadioButton) listView.findViewById(R.id.not_satisfied_radio_btn);
             satisfied.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

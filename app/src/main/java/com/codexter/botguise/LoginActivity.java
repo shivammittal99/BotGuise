@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     String email = user.getEmail();
                     String uid = user.getUid();
                     Uri photoUrl = user.getPhotoUrl();
-                    Intent intent = new Intent(LoginActivity.this, ChooseMode.class);
+                    Intent intent = new Intent(LoginActivity.this, PackSelectActivity.class);
                     Toast.makeText(LoginActivity.this, "You are signed in as " + name, Toast.LENGTH_SHORT).show();
                     intent.putExtra("name", name);
                     intent.putExtra("email", email);

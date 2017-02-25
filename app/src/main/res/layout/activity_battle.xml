@@ -4,6 +4,7 @@
     android:id="@+id/activity_battle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue_50"
     android:orientation="vertical"
     tools:context="com.codexter.botguise.BattleActivity">
 
@@ -11,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#E3F2FD"
+        android:elevation="4dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -24,11 +26,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_horizontal"
-                android:padding="4dp"
                 android:text="You"
                 android:textColor="#616161"
                 android:textSize="16sp" />
@@ -39,12 +39,12 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_horizontal"
-                android:padding="4dp"
                 android:text="0"
                 android:textColor="#000000"
-                android:textSize="56sp" />
+                android:textSize="40sp" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -54,11 +54,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_horizontal"
-                android:padding="4dp"
                 android:text="Time Left"
                 android:textColor="#616161"
                 android:textSize="16sp" />
@@ -69,10 +67,9 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_horizontal"
-                android:padding="4dp"
                 android:text="0"
                 android:textColor="#000000"
-                android:textSize="56sp" />
+                android:textSize="40sp" />
 
         </LinearLayout>
 
@@ -87,11 +84,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_horizontal"
-                android:padding="4dp"
                 android:text="Opponent"
                 android:textColor="#616161"
                 android:textSize="16sp" />
@@ -102,10 +97,9 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_horizontal"
-                android:padding="4dp"
                 android:text="0"
                 android:textColor="#000000"
-                android:textSize="56sp" />
+                android:textSize="40sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -121,6 +115,7 @@
             android:background="#E3F2FD"
             android:divider="@null"
             android:dividerHeight="0dp"
+            android:paddingBottom="16dp"
             android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll" />
 
@@ -160,16 +155,12 @@
             android:visibility="gone" />
     </RelativeLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
-
     <LinearLayout
         android:id="@+id/battleAddMessageBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp">
+        android:background="@drawable/send_message_box"
+        android:clipToPadding="true">
 
         <EditText
             android:id="@+id/battleMessageToSend"
@@ -206,35 +197,48 @@
         </FrameLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/takeResponseView"
+    <RadioGroup
+        android:id="@+id/respond_radio_btns"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
-        android:orientation="horizontal">
+        android:layout_gravity="center"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:orientation="horizontal"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp"
+        android:visibility="gone">
 
-        <Button
-            android:id="@+id/responseUserButton"
-            style="?android:attr/buttonBarButtonStyle"
+        <RadioButton
+            android:id="@+id/respond_user_radio_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:buttonTint="@android:color/holo_blue_dark" />
+
+        <TextView
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:background="#0D47A1"
-            android:gravity="center"
             android:text="User"
-            android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:textSize="36sp" />
 
-        <Button
-            android:id="@+id/responseBotButton"
-            style="?android:attr/buttonBarButtonStyle"
+        <RadioButton
+            android:id="@+id/respond_bot_radio_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:buttonTint="@android:color/holo_orange_dark"
+            android:foregroundGravity="right" />
+
+        <TextView
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:background="#0D47A1"
-            android:gravity="center"
             android:text="Bot"
-            android:textColor="@android:color/white"
-            android:textSize="24sp" />
-    </LinearLayout>
+            android:textSize="36sp" />
+
+    </RadioGroup>
 </LinearLayout>

@@ -15,12 +15,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class GetTrainResponse {
+public class GetBattleResponseNew {
 
     private static final String PBC_URL = "http://botguise3134.cloudapp.net/PBC";
     private static final String TRAIN_URL = "http://botguise3134.cloudapp.net/train";
 
-    public GetTrainResponse() {
+    public GetBattleResponseNew() {
     }
 
     public static ArrayList<String> getMessage(String user, String part, boolean train, String message) {

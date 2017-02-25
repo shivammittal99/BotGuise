@@ -34,8 +34,9 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ChooseMode"
+            android:parentActivityName=".PackSelectActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/activity_theme" />
+            android:theme="@style/ChooseModeTheme" />
         <activity
             android:name=".BattleActivity"
             android:label="Battle"
@@ -61,11 +62,17 @@
         <activity
             android:name=".EmailAuthActivity"
             android:parentActivityName=".LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/activity_theme" />
         <activity
             android:name=".SignUpActivity"
             android:parentActivityName=".LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/activity_theme" />
+        <activity
+            android:name=".PackSelectActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/PackSelectTheme" />
     </application>
 
 </manifest>

@@ -4,6 +4,7 @@ public final class UserDetails {
     private String username;
     private String email;
     private Boolean introductionStatus;
+    private String brain;
 
     public UserDetails() {
         this.username = null;

@@ -34,6 +34,7 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
     private static final int POST_GET_LOADER_ID = 1;
     private static String mUsername;
     private static MessageAdaptor mAdaptor;
+    private static String PACK;
     private EditText messageToSend;
     private ProgressBar loadingProgressSpinner;
     private ArrayList<Message> mMessages = new ArrayList<>();
@@ -45,6 +46,7 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
 
         Intent intent = getIntent();
         mUsername = intent.getStringExtra("name");
+        PACK = intent.getStringExtra("PACK");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -111,6 +113,7 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
                 dialog.dismiss();
                 Intent intent = new Intent(Introduction.this, ChooseMode.class);
                 intent.putExtra("completedIntroduction", false);
+                intent.putExtra("PACK", PACK);
                 finish();
                 startActivity(intent);
             }
@@ -132,6 +135,8 @@ public class Introduction extends AppCompatActivity implements LoaderManager.Loa
     private void leaveIntroduction() {
         Intent leaveIntroduction = new Intent(Introduction.this, ChooseMode.class);
         leaveIntroduction.putExtra("completedIntroduction", true);
+        getIntent().putExtra("PACK", PACK);
+        finish();
         startActivity(leaveIntroduction);
     }
 

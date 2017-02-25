@@ -70,7 +70,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
                         String email = user.getEmail();
                         String uid = user.getUid();
                         Uri photoUrl = user.getPhotoUrl();
-                        Intent intent = new Intent(EmailAuthActivity.this, ChooseMode.class);
+                        Intent intent = new Intent(EmailAuthActivity.this, PackSelectActivity.class);
                         Toast.makeText(EmailAuthActivity.this, "You are signed in as " + email, Toast.LENGTH_SHORT).show();
                         intent.putExtra("name", email);
                         intent.putExtra("email", email);
@@ -176,21 +176,21 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
         final FirebaseUser user = mAuth.getCurrentUser();
         try {
             user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                findViewById(R.id.verify_email_button).setEnabled(true);
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    findViewById(R.id.verify_email_button).setEnabled(true);
 
-                if (task.isSuccessful()) {
-                    Toast.makeText(EmailAuthActivity.this,
-                            "Verification email sent to " + user.getEmail(),
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e("EmailAuthActivity", "sendEmailVerification", task.getException());
-                    Toast.makeText(EmailAuthActivity.this,
-                            "Failed to send verification email.",
-                            Toast.LENGTH_SHORT).show();
+                    if (task.isSuccessful()) {
+                        Toast.makeText(EmailAuthActivity.this,
+                                "Verification email sent to " + user.getEmail(),
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e("EmailAuthActivity", "sendEmailVerification", task.getException());
+                        Toast.makeText(EmailAuthActivity.this,
+                                "Failed to send verification email.",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
             });
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -277,7 +277,7 @@ public class EmailAuthActivity extends AppCompatActivity implements View.OnClick
         } else if (i == R.id.verify_email_button) {
             sendEmailVerification();
         } else if (i == R.id.go_to_login_button) {
-            finish();
+            Intent intent = new Intent(EmailAuthActivity.this, SignUpActivity.class);
         } else if (i == R.id.forgot_password_button) {
             resetPassword();
         }
