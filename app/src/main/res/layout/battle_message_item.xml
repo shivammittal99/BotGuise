@@ -102,28 +102,28 @@
             tools:text="Message" />
 
         <RadioGroup
-            android:id="@+id/satisfication_radio_btns"
+            android:id="@+id/guessed_radio_btns"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <RadioButton
-                android:id="@+id/satisfied_radio_btn"
+                android:id="@+id/guessed_user_radio_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="34dp"
                 android:layout_weight="1"
-                android:buttonTint="@android:color/holo_green_light" />
+                android:buttonTint="@android:color/holo_blue_dark" />
 
             <RadioButton
-                android:id="@+id/not_satisfied_radio_btn"
+                android:id="@+id/guessed_bot_radio_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="16dp"
                 android:layout_weight="1"
-                android:buttonTint="@android:color/holo_red_light" />
+                android:buttonTint="@android:color/holo_orange_dark" />
         </RadioGroup>
     </LinearLayout>
 

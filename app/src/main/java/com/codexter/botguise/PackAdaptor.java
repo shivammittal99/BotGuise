@@ -1,5 +1,6 @@
 package com.codexter.botguise;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -58,16 +59,24 @@ public class PackAdaptor extends RecyclerView.Adapter<PackAdaptor.MyViewHolder> 
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, ChooseMode.class);
                 switch (pack.getThumbnail()) {
-                    case R.drawable.pack01:
+                    case R.drawable.marvel_vs_dc:
                         intent.putExtra("PACK", mContext.getString(R.string.pack01));
+                        ((Activity) mContext).finish();
                         mContext.startActivity(intent);
                         break;
-                    case R.drawable.pack02:
+                    case R.drawable.harry_potter:
                         intent.putExtra("PACK", mContext.getString(R.string.pack02));
+                        ((Activity) mContext).finish();
                         mContext.startActivity(intent);
                         break;
-                    case R.drawable.pack03:
+                    case R.drawable.ronaldo_messi:
                         intent.putExtra("PACK", mContext.getString(R.string.pack03));
+                        ((Activity) mContext).finish();
+                        mContext.startActivity(intent);
+                        break;
+                    case R.drawable.friends:
+                        intent.putExtra("PACK", mContext.getString(R.string.pack04));
+                        ((Activity) mContext).finish();
                         mContext.startActivity(intent);
                         break;
                 }

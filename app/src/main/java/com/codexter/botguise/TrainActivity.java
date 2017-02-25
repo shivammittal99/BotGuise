@@ -39,6 +39,7 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
     private ArrayList<TrainMessage> mMessages = new ArrayList<>();
     private String mMessage;
     private String prevblob;
+    private String currblob;
     private String trainblob;
 
     @Override
@@ -133,15 +134,16 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
                         field_changed_response.setError("Required");
                     } else {
                         TrainMessage previous = mAdaptor.getItem(index - 1);
+                        TrainMessage change = mAdaptor.getItem(index);
                         prevblob = previous.getMessage();
                         trainblob = changedResponse;
+                        currblob = change.getMessage();
                         if (getLoaderManager().getLoader(CHANGE_MESSAGE_LOADER_ID) == null) {
                             getLoaderManager().initLoader(CHANGE_MESSAGE_LOADER_ID, null, TrainActivity.this);
                         } else {
                             getLoaderManager().restartLoader(CHANGE_MESSAGE_LOADER_ID, null, TrainActivity.this);
                         }
                         satisfied_radio.setChecked(true);
-                        TrainMessage change = mAdaptor.getItem(index);
                         change.setMessage(trainblob);
                         mAdaptor.notifyDataSetChanged();
                         dialog.dismiss();
@@ -190,7 +192,7 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
             case GET_MESSAGE_LOADER_ID:
                 return new GetMessage(getApplicationContext(), mUserId, PACK, true, mMessage);
             case CHANGE_MESSAGE_LOADER_ID:
-                return new ChangeMessage(getApplicationContext(), mUserId, PACK, prevblob, trainblob);
+                return new ChangeMessage(getApplicationContext(), mUserId, PACK, prevblob, currblob, trainblob);
             default:
                 return null;
         }
@@ -237,12 +239,13 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
 
     public static class ChangeMessage extends AsyncTaskLoader<ArrayList<String>> {
 
-        private String user, prevblob, trainblob, part;
+        private String user, prevblob, currblob, trainblob, part;
 
-        public ChangeMessage(Context context, String user, String part, String prevblob, String trainblob) {
+        public ChangeMessage(Context context, String user, String part, String prevblob, String currblob, String trainblob) {
             super(context);
             this.user = user;
             this.prevblob = prevblob;
+            this.currblob = currblob;
             this.trainblob = trainblob;
             this.part = part;
         }
@@ -254,7 +257,7 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
 
         @Override
         public ArrayList<String> loadInBackground() {
-            GetTrainResponse.changeMessage(user, part, prevblob, trainblob);
+            GetTrainResponse.changeMessage(user, part, prevblob, currblob, trainblob);
             return new ArrayList<>();
         }
 

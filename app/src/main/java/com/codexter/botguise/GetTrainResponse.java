@@ -46,11 +46,11 @@ public class GetTrainResponse {
         return replies;
     }
 
-    public static void changeMessage(String user, String part, String prevblob, String trainblob) {
+    public static void changeMessage(String user, String part, String prevblob, String currblob, String trainblob) {
         URL url = createUrl(TRAIN_URL);
 
         try {
-            makeHttpRequestToChange(url, user, part, prevblob, trainblob);
+            makeHttpRequestToChange(url, user, part, prevblob, currblob, trainblob);
         } catch (IOException e) {
         }
     }
@@ -103,7 +103,7 @@ public class GetTrainResponse {
         return JSONResponse;
     }
 
-    private static void makeHttpRequestToChange(URL url, String user, String part, String prevblob, String trainblob) throws IOException {
+    private static void makeHttpRequestToChange(URL url, String user, String part, String prevblob, String currblob, String trainblob) throws IOException {
         HttpURLConnection urlConnection = null;
         String JSONResponse = "";
         InputStream inputStream = null;
@@ -118,6 +118,7 @@ public class GetTrainResponse {
                 jsonObject.put("user", user);
                 jsonObject.put("part", part);
                 jsonObject.put("prevblob", prevblob);
+                jsonObject.put("currblob", currblob);
                 jsonObject.put("trainblob", trainblob);
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream());
                 outputStreamWriter.write(jsonObject.toString());

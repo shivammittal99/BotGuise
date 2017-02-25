@@ -3,13 +3,8 @@ package com.codexter.botguise;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -48,17 +43,15 @@ public class ChooseMode extends AppCompatActivity {
 
         PACK = getIntent().getStringExtra("PACK");
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        initCollapsingToolbar(PACK);
-
         try {
             if (PACK.equals(getString(R.string.pack01))) {
-                Glide.with(this).load(R.drawable.pack01).into((ImageView) findViewById(R.id.backdrop));
+                Glide.with(this).load(R.drawable.marvel_dc_back).into((ImageView) findViewById(R.id.backdrop));
             } else if (PACK.equals(getString(R.string.pack02))) {
-                Glide.with(this).load(R.drawable.pack02).into((ImageView) findViewById(R.id.backdrop));
+                Glide.with(this).load(R.drawable.harry_potter_back).into((ImageView) findViewById(R.id.backdrop));
             } else if (PACK.equals(getString(R.string.pack03))) {
                 Glide.with(this).load(R.drawable.pack03).into((ImageView) findViewById(R.id.backdrop));
+            } else if (PACK.equals(getString(R.string.pack04))) {
+                Glide.with(this).load(R.drawable.friends_back).into((ImageView) findViewById(R.id.backdrop));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -165,36 +158,17 @@ public class ChooseMode extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         };
-    }
 
-    /**
-     * Initializing collapsing toolbar
-     * Will show and hide the toolbar title on scroll
-     */
-    private void initCollapsingToolbar(final String title) {
-        final CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
-
-        // hiding & showing the title when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
+        findViewById(R.id.back_menu).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(title);
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
-                    isShow = false;
-                }
+            public void onClick(View v) {
+                Intent back_intent = new Intent(ChooseMode.this, PackSelectActivity.class);
+                back_intent.putExtra("name", mFirebaseUser.getDisplayName());
+                back_intent.putExtra("email", mFirebaseUser.getEmail());
+                back_intent.putExtra("uid", mFirebaseUser.getUid());
+                back_intent.putExtra("photoUrl", mFirebaseUser.getPhotoUrl());
+                finish();
+                startActivity(back_intent);
             }
         });
     }
@@ -208,7 +182,7 @@ public class ChooseMode extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 Intent intent = new Intent(ChooseMode.this, BattleActivity.class);
-                intent.putExtra("MODE", "CREATE");
+                intent.putExtra("MODE_CREATE", true);
                 intent.putExtra("PACK", PACK);
                 finish();
                 startActivity(intent);
@@ -220,7 +194,7 @@ public class ChooseMode extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 Intent intent = new Intent(ChooseMode.this, BattleActivity.class);
-                intent.putExtra("MODE", "JOIN");
+                intent.putExtra("MODE_CREATE", false);
                 intent.putExtra("PACK", PACK);
                 finish();
                 startActivity(intent);
@@ -232,24 +206,14 @@ public class ChooseMode extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.choose_mode_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.sign_out_menu:
-                mAuth.signOut();
-                Toast.makeText(this, "You have been logged out successully.", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(ChooseMode.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    public void onBackPressed() {
+        Intent back_intent = new Intent(ChooseMode.this, PackSelectActivity.class);
+        back_intent.putExtra("name", mFirebaseUser.getDisplayName());
+        back_intent.putExtra("email", mFirebaseUser.getEmail());
+        back_intent.putExtra("uid", mFirebaseUser.getUid());
+        back_intent.putExtra("photoUrl", mFirebaseUser.getPhotoUrl());
+        finish();
+        startActivity(back_intent);
     }
 
     @Override

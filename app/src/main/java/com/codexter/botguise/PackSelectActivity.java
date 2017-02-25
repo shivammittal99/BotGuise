@@ -1,5 +1,6 @@
 package com.codexter.botguise;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
@@ -13,9 +14,11 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PackSelectActivity extends AppCompatActivity {
+
+    private boolean mShowingBack;
 
     private RecyclerView recyclerView;
     private PackAdaptor adapter;
@@ -59,9 +64,9 @@ public class PackSelectActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.pack_select_cover_title)).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Raleway-Black.ttf"));
 
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(0), true));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
 
@@ -87,8 +92,11 @@ public class PackSelectActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 Toast.makeText(this, "You have been logged out successully.", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(PackSelectActivity.this, LoginActivity.class);
+                finish();
                 startActivity(intent);
                 return true;
+            case R.id.how_to_play_menu:
+                flipCard();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -131,9 +139,10 @@ public class PackSelectActivity extends AppCompatActivity {
      */
     private void preparePacks() {
         int[] covers = new int[]{
-                R.drawable.pack02,
-                R.drawable.pack01,
-                R.drawable.pack03};
+                R.drawable.harry_potter,
+                R.drawable.marvel_vs_dc,
+                R.drawable.ronaldo_messi,
+                R.drawable.friends};
 
 
         Pack pack = new Pack("Harry Potter", covers[0]);
@@ -142,7 +151,10 @@ public class PackSelectActivity extends AppCompatActivity {
         pack = new Pack("Marvel vs DC", covers[1]);
         packList.add(pack);
 
-        pack = new Pack("Barcelona vs Real Madrid", covers[2]);
+        pack = new Pack("Soccer", covers[2]);
+        packList.add(pack);
+
+        pack = new Pack("Friends", covers[3]);
         packList.add(pack);
 
         adapter.notifyDataSetChanged();
@@ -154,6 +166,55 @@ public class PackSelectActivity extends AppCompatActivity {
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    private void flipCard() {
+        if (mShowingBack) {
+            getFragmentManager().popBackStack();
+            return;
+        }
+
+        // Flip to the back.
+
+        mShowingBack = true;
+
+        // Create and commit a new fragment transaction that adds the fragment for
+        // the back of the card, uses custom animations, and is part of the fragment
+        // manager's back stack.
+
+        getFragmentManager()
+                .beginTransaction()
+
+                // Replace the default fragment animations with animator resources
+                // representing rotations when switching to the back of the card, as
+                // well as animator resources representing rotations when flipping
+                // back to the front (e.g. when the system Back button is pressed).
+                .setCustomAnimations(
+                        R.animator.card_flip_right_in,
+                        R.animator.card_flip_right_out,
+                        R.animator.card_flip_left_in,
+                        R.animator.card_flip_left_out)
+
+                // Replace any fragments currently in the container view with a
+                // fragment representing the next page (indicated by the
+                // just-incremented currentPage variable).
+                .replace(R.id.container, new BackFragment())
+
+                // Add this transaction to the back stack, allowing users to press
+                // Back to get to the front of the card.
+                .addToBackStack(null)
+
+                // Commit the transaction.
+                .commit();
+    }
+
+    public static class BackFragment extends Fragment {
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            return inflater.inflate(R.layout.help_fragment, container, false);
+        }
+
     }
 
     /**

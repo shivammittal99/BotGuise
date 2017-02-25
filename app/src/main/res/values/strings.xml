@@ -104,6 +104,10 @@
     <string name="pack01">pack01</string>
     <string name="pack02">pack02</string>
     <string name="pack03">pack03</string>
+    <string name="pack04">pack04</string>
 
     <string name="empty_prev_response_for_bot">98a633a4227ede00887ce0e76fbc98d8</string>
+
+    <integer name="card_flip_time_full">2000</integer>
+    <integer name="card_flip_time_half">1000</integer>
 </resources>

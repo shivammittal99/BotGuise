@@ -13,9 +13,10 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import static com.codexter.botguise.R.id.guess_user_radio_btn;
 
 public class ChatMessageAdaptor extends ArrayAdapter<ChatMessage> {
     private final int BOT = 1;
@@ -40,6 +41,7 @@ public class ChatMessageAdaptor extends ArrayAdapter<ChatMessage> {
         ImageView person_icon = (ImageView) listView.findViewById(R.id.person_icon);
         TextView messageTextView;
         RadioGroup guess_radio_btns = null;
+        RadioGroup guessed_radio_btns = null;
 
         Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "fonts/Raleway-Regular.ttf");
 
@@ -58,20 +60,10 @@ public class ChatMessageAdaptor extends ArrayAdapter<ChatMessage> {
             person_icon.setVisibility(View.INVISIBLE);
             listView.findViewById(R.id.userView).setVisibility(View.VISIBLE);
             listView.findViewById(R.id.opponentView).setVisibility(View.GONE);
-            RadioGroup Satisfaction = (RadioGroup) listView.findViewById(R.id.satisfication_radio_btns);
-            Satisfaction.check(R.id.satisfied_radio_btn);
-            RadioButton satisfied_radio = (RadioButton) listView.findViewById(R.id.satisfied_radio_btn);
-
-            satisfied_radio.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        Toast.makeText(mContext, "Satisfied", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(mContext, "Not Satisfied", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            guessed_radio_btns = (RadioGroup) listView.findViewById(R.id.guessed_radio_btns);
+            for (int i = 0; i < guessed_radio_btns.getChildCount(); i++) {
+                guessed_radio_btns.getChildAt(i).setEnabled(false);
+            }
         } else {
             messageTextView = (TextView) listView.findViewById(R.id.opponentMessageTextView);
             messageTextView.setTypeface(typeface);
@@ -82,34 +74,58 @@ public class ChatMessageAdaptor extends ArrayAdapter<ChatMessage> {
         }
         messageTextView.setText(message.getMessage());
 
-        if (mContext instanceof BattleActivity) {
-            if (!message.getUserInitials().equals(mUsername)) {
-                guess(message, guess_radio_btns);
-//                ((BattleActivity) mContext).userResponds();
+        if (userInitials.equals(mUsername)) {
+            if (guessed_radio_btns.getCheckedRadioButtonId() != -1) {
+                if (message.getGuess() == USER) {
+                    ((RadioButton) listView.findViewById(R.id.guessed_user_radio_btn)).setChecked(true);
+                } else if (message.getGuess() == BOT) {
+                    ((RadioButton) listView.findViewById(R.id.guessed_bot_radio_btn)).setChecked(true);
+                }
+            }
+        } else {
+            if (guess_radio_btns.getCheckedRadioButtonId() == -1) {
+                if (mContext instanceof BattleActivity) {
+                    guess(message, listView);
+                }
             } else {
-//                ((BattleActivity) mContext).userResponds();
+                if (message.getGuess() == USER) {
+                    ((RadioButton) listView.findViewById(guess_user_radio_btn)).setChecked(true);
+                } else if (message.getGuess() == BOT) {
+                    ((RadioButton) listView.findViewById(R.id.guess_bot_radio_btn)).setChecked(true);
+                }
             }
         }
         return listView;
     }
 
-    private void guess(final ChatMessage message, final RadioGroup guess_radio_btns) {
+    private void guess(final ChatMessage message, View listView) {
         final int actual = message.getActual();
-        guess_radio_btns.check(-1);
-        guess_radio_btns.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        final RadioButton guess_user_radio_btn = ((RadioButton) listView.findViewById(R.id.guess_user_radio_btn));
+        final RadioButton guess_bot_radio_btn = ((RadioButton) listView.findViewById(R.id.guess_bot_radio_btn));
+        guess_user_radio_btn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.guess_user_radio_btn) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
                     ((BattleActivity) mContext).changescore(actual, USER);
                     message.setGuess(USER);
-                } else {
+                }
+                guess_user_radio_btn.setOnCheckedChangeListener(null);
+                guess_bot_radio_btn.setEnabled(false);
+                guess_user_radio_btn.setEnabled(false);
+                notifyDataSetChanged();
+            }
+        });
+        guess_bot_radio_btn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
                     ((BattleActivity) mContext).changescore(actual, BOT);
                     message.setGuess(BOT);
                 }
-                guess_radio_btns.setOnCheckedChangeListener(null);
-                for (int i = 0; i < guess_radio_btns.getChildCount(); i++) {
-                    guess_radio_btns.getChildAt(i).setEnabled(false);
-                }
+                guess_user_radio_btn.setOnCheckedChangeListener(null);
+                guess_bot_radio_btn.setEnabled(false);
+                guess_user_radio_btn.setEnabled(false);
+                notifyDataSetChanged();
             }
         });
     }

@@ -77,4 +77,11 @@
 
     <include layout="@layout/content_main_pack_selector" />
 
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="16dp" />
+
 </android.support.design.widget.CoordinatorLayout>
