@@ -19,6 +19,7 @@ public class GetTrainResponse {
 
     private static final String PBC_URL = "http://botguise3134.cloudapp.net/PBC";
     private static final String TRAIN_URL = "http://botguise3134.cloudapp.net/train";
+    private static final String LINK_URL = "http://botguise3134.cloudapp.net/link";
 
     public GetTrainResponse() {
     }
@@ -47,8 +48,12 @@ public class GetTrainResponse {
     }
 
     public static void changeMessage(String user, String part, String prevblob, String currblob, String trainblob) {
-        URL url = createUrl(TRAIN_URL);
-
+        URL url = null;
+        if (trainblob == null) {
+            url = createUrl(LINK_URL);
+        } else {
+            url = createUrl(TRAIN_URL);
+        }
         try {
             makeHttpRequestToChange(url, user, part, prevblob, currblob, trainblob);
         } catch (IOException e) {
@@ -119,7 +124,9 @@ public class GetTrainResponse {
                 jsonObject.put("part", part);
                 jsonObject.put("prevblob", prevblob);
                 jsonObject.put("currblob", currblob);
-                jsonObject.put("trainblob", trainblob);
+                if (trainblob != null) {
+                    jsonObject.put("trainblob", trainblob);
+                }
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream());
                 outputStreamWriter.write(jsonObject.toString());
                 outputStreamWriter.close();

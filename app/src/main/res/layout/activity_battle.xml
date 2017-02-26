@@ -8,6 +8,15 @@
     android:orientation="vertical"
     tools:context="com.codexter.botguise.BattleActivity">
 
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        android:elevation="8dp"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -112,12 +121,21 @@
             android:id="@+id/battleChatList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@+id/typing_indicator"
             android:background="#E3F2FD"
             android:divider="@null"
             android:dividerHeight="0dp"
             android:paddingBottom="16dp"
             android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll" />
+
+        <ImageView
+            android:id="@id/typing_indicator"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/blue_50"
+            android:src="@drawable/typing_indicator" />
 
         <RelativeLayout
             android:id="@+id/battle_empty_view"
@@ -241,4 +259,5 @@
             android:textSize="36sp" />
 
     </RadioGroup>
+
 </LinearLayout>

@@ -19,7 +19,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,8 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PackSelectActivity extends AppCompatActivity {
-
-    private boolean mShowingBack;
 
     private RecyclerView recyclerView;
     private PackAdaptor adapter;
@@ -96,7 +96,7 @@ public class PackSelectActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.how_to_play_menu:
-                flipCard();
+                showHelp();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -168,15 +168,7 @@ public class PackSelectActivity extends AppCompatActivity {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
-    private void flipCard() {
-        if (mShowingBack) {
-            getFragmentManager().popBackStack();
-            return;
-        }
-
-        // Flip to the back.
-
-        mShowingBack = true;
+    private void showHelp() {
 
         // Create and commit a new fragment transaction that adds the fragment for
         // the back of the card, uses custom animations, and is part of the fragment
@@ -212,9 +204,47 @@ public class PackSelectActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.help_fragment, container, false);
-        }
+            View view = inflater.inflate(R.layout.help_fragment, container, false);
 
+            Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Raleway-Regular.ttf");
+            final TextView help_satis_text = (TextView) view.findViewById(R.id.help_satis_text);
+            final TextView help_guess_text = (TextView) view.findViewById(R.id.help_guess_text);
+
+            ((TextView) view.findViewById(R.id.help_title)).setTypeface(typeface);
+            ((TextView) view.findViewById(R.id.help_train_sub)).setTypeface(typeface);
+            ((TextView) view.findViewById(R.id.help_train)).setTypeface(typeface);
+            ((TextView) view.findViewById(R.id.help_battle_sub)).setTypeface(typeface);
+            ((TextView) view.findViewById(R.id.help_battle_1)).setTypeface(typeface);
+            ((TextView) view.findViewById(R.id.help_battle_2)).setTypeface(typeface);
+
+            help_guess_text.setTypeface(typeface);
+            help_satis_text.setTypeface(typeface);
+
+            RadioButton help_user = (RadioButton) view.findViewById(R.id.help_user);
+            final RadioButton help_satis = (RadioButton) view.findViewById(R.id.help_satis);
+            help_satis.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        help_satis_text.setText("Satisfied");
+                    } else {
+                        help_satis_text.setText("Not Satisfied");
+                    }
+                }
+            });
+            help_user.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        help_guess_text.setText("User");
+                    } else {
+                        help_guess_text.setText("Bot");
+                    }
+                }
+            });
+
+            return view;
+        }
     }
 
     /**

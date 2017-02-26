@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,10 +20,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -31,16 +37,21 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
 
     private static final int GET_MESSAGE_LOADER_ID = 1;
     private static final int CHANGE_MESSAGE_LOADER_ID = 2;
+    private static final int LINK_MESSAGE_LOADER_ID = 3;
+
     private static String mUserId;
     private static String PACK;
     private static TrainMessageAdaptor mAdaptor;
     private EditText trainMessageToSend;
     private ProgressBar trainLoadingProgressBar;
+    private ImageView typing_indicator;
     private ArrayList<TrainMessage> mMessages = new ArrayList<>();
     private String mMessage;
     private String prevblob;
     private String currblob;
     private String trainblob;
+    private String linkPrevblob;
+    private String linkCurrblob;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +75,8 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
         chatList.setAdapter(mAdaptor);
 
         trainLoadingProgressBar = (ProgressBar) findViewById(R.id.trainLoadingProgressBar);
+        typing_indicator = (ImageView) findViewById(R.id.typing_indicator);
+        Glide.with(this).load(R.drawable.typing_indicator).asGif().into(typing_indicator);
         trainMessageToSend = (EditText) findViewById(R.id.trainMessageToSend);
         Button trainSendMessage = (Button) findViewById(R.id.trainSendMessage);
 
@@ -74,7 +87,17 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
             @Override
             public void onClick(View v) {
                 mMessage = trainMessageToSend.getText().toString().trim();
+
                 if (!TextUtils.isEmpty(mMessage)) {
+                    if (mAdaptor.getCount() > 0) {
+                        linkCurrblob = mMessage;
+                        linkPrevblob = mAdaptor.getItem(mAdaptor.getCount() - 1).getMessage();
+                        if (getLoaderManager().getLoader(LINK_MESSAGE_LOADER_ID) == null) {
+                            getLoaderManager().initLoader(LINK_MESSAGE_LOADER_ID, null, TrainActivity.this);
+                        } else {
+                            getLoaderManager().restartLoader(LINK_MESSAGE_LOADER_ID, null, TrainActivity.this);
+                        }
+                    }
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(trainMessageToSend.getWindowToken(), 0);
                     mAdaptor.add(new TrainMessage(false, mMessage));
@@ -187,27 +210,43 @@ public class TrainActivity extends AppCompatActivity implements LoaderManager.Lo
 
     @Override
     public Loader<ArrayList<String>> onCreateLoader(int id, Bundle args) {
-        trainLoadingProgressBar.setVisibility(View.VISIBLE);
-        switch (id) {
-            case GET_MESSAGE_LOADER_ID:
-                return new GetMessage(getApplicationContext(), mUserId, PACK, true, mMessage);
-            case CHANGE_MESSAGE_LOADER_ID:
-                return new ChangeMessage(getApplicationContext(), mUserId, PACK, prevblob, currblob, trainblob);
-            default:
-                return null;
+        typing_indicator.setVisibility(View.VISIBLE);
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        if (isConnected) {
+            switch (id) {
+                case GET_MESSAGE_LOADER_ID:
+                    return new GetMessage(getApplicationContext(), mUserId, PACK, true, mMessage);
+                case CHANGE_MESSAGE_LOADER_ID:
+                    return new ChangeMessage(getApplicationContext(), mUserId, PACK, prevblob, currblob, trainblob);
+                case LINK_MESSAGE_LOADER_ID:
+                    return new ChangeMessage(getApplicationContext(), mUserId, PACK, linkPrevblob, linkCurrblob, null);
+                default:
+                    return null;
+            }
+        } else {
+            Toast.makeText(this, "Internet connection is not available.", Toast.LENGTH_SHORT).show();
+            return null;
         }
     }
 
     @Override
     public void onLoadFinished(Loader<ArrayList<String>> loader, ArrayList<String> data) {
         if (loader.getId() == GET_MESSAGE_LOADER_ID) {
-            for (int i = 0; i < data.size(); i++) {
-                mAdaptor.add(new TrainMessage(true, data.get(i)));
+            try {
+                for (int i = 0; i < data.size(); i++) {
+                    mAdaptor.add(new TrainMessage(true, data.get(i)));
+                }
+            } catch (NullPointerException e) {
+                Toast.makeText(this, "The server is not responding. Please try again later.", Toast.LENGTH_SHORT).show();
             }
         } else if (loader.getId() == CHANGE_MESSAGE_LOADER_ID) {
-
         }
-        trainLoadingProgressBar.setVisibility(GONE);
+        typing_indicator.setVisibility(GONE);
     }
 
     @Override

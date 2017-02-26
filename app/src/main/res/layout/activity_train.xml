@@ -4,18 +4,21 @@
     android:id="@+id/activity_train"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue_50"
     android:orientation="vertical"
     tools:context="com.codexter.botguise.TrainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@color/blue_50">
 
         <ListView
             android:id="@+id/trainChatList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@+id/typing_indicator"
             android:background="#E3F2FD"
             android:divider="@null"
             android:dividerHeight="0dp"
@@ -23,12 +26,20 @@
             android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll" />
 
+        <ImageView
+            android:id="@id/typing_indicator"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/blue_50"
+            android:src="@drawable/typing_indicator" />
+
         <RelativeLayout
             android:id="@+id/train_empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#E3F2FD"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/train_image_moon_bot"

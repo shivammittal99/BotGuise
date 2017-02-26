@@ -108,6 +108,6 @@
 
     <string name="empty_prev_response_for_bot">98a633a4227ede00887ce0e76fbc98d8</string>
 
-    <integer name="card_flip_time_full">2000</integer>
-    <integer name="card_flip_time_half">1000</integer>
+    <integer name="card_flip_time_full">1000</integer>
+    <integer name="card_flip_time_half">500</integer>
 </resources>
