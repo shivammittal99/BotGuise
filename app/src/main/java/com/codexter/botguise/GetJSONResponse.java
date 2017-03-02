@@ -78,13 +78,12 @@ public final class GetJSONResponse {
             JSONArray JSONMessages = jsonObject.getJSONArray("messages");
             for (int i = 0; i <= watermark; i += 1) {
                 JSONObject currentResponse = JSONMessages.getJSONObject(i);
-                if(currentResponse.getString("from").equals(mUsername)){
+                if (currentResponse.getString("from").equals(mUsername)) {
                     messages.add(new Message("EEMMPPTTYY", currentResponse.getString("text"), mUsername));
-                }
-                else if (currentResponse.has("text")) {
+                } else if (currentResponse.has("text")) {
                     messages.add(new Message("Bot", currentResponse.getString("text"), "EEMMPPTTYY"));
                 } else if (currentResponse.has("attachments")) {
-                    messages.add(new Message("Bot", currentResponse.getJSONArray("attachments").getJSONObject(0).getString("url"),"EEMMPPTTYY"));
+                    messages.add(new Message("Bot", currentResponse.getJSONArray("attachments").getJSONObject(0).getString("url"), "EEMMPPTTYY"));
                 }
             }
             mWatermark = watermark;

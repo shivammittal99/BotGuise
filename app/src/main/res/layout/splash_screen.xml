@@ -13,21 +13,23 @@
         android:layout_marginTop="120dp"
         android:elevation="5dp"
         android:src="@drawable/ic_launcher_2" />
+
     <TextView
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/icon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/white"
         android:fontFamily="sans-serif-large"
         android:text="Welcome to BotGuise!!!"
-        android:layout_height="wrap_content" />
+        android:textColor="@android:color/white"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="100dp"/>
+        android:layout_marginBottom="100dp" />
 </RelativeLayout>
